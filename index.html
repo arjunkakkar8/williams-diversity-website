@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Diversity Case Study: Williams College</title>
+  </head>
+  <body>
+    <div id="main-chart"></div>
+    <div id="overlay">
+      <div class="title-text trigger" id="title" data-step="0">
+        Reimagining Institutional Diversity
+      </div>
+      <div class="title-text" id="subtitle">
+        A Case Study of Williams College
+      </div>
+      <div
+        class="trigger"
+        data-step="1"
+        id="body-container"
+        style="padding-top:10vh; padding-bottom: 100vh;"
+      >
+        <div class="intro">
+          <div class="body-text" style="padding-top:5vh;">
+            <span style="font-size: 30px;">Welcome to Williams,</span> a small
+            liberal arts college located in the heart of the berkshires.
+          </div>
+          <div class="figure-container">
+            <div class="body-text">
+              In the academic year 2017-2018, the college community was
+              comprised of 2061 undergraduate students.
+            </div>
+            <div class="body-text">
+              <select id="proportion-figure-selector">
+                <option id="proportion-figure-selector-1">The class</option>
+                <option id="proportion-figure-selector-2"
+                  >The US</option
+                > </select
+              >looked like:
+            </div>
+            <div id="college-proportion-figure"></div>
+          </div>
+          <div
+            class="body-text trigger"
+            data-step="2"
+            style="padding-top: 5vh;"
+          >
+            We have traditionally looked at institutional diversity through
+            charts like these, but what does diversity look like on the
+            ground?<br /><br />How does this diversity in numbers manifest in
+            campus life?
+          </div>
+        </div>
+        <div class="housing trigger" data-step="3">
+          <div class="body-text">
+            Williams is a residential college, so a large proportion of social
+            interactions are determined by where you live. <br /><br />
+            Let’s take a look at the college dorms.
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+    <script
+      type="text/javascript"
+      src="js/noframework.waypoints.min.js"
+    ></script>
+    <script type="text/javascript" src="map/roads.geojson"></script>
+    <script type="text/javascript" src="map/buildings.geojson"></script>
+    <script type="text/javascript" src="js/propChart.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+  </body>
+</html>
