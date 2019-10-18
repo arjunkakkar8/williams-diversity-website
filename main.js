@@ -121,7 +121,7 @@ function createFigure() {
         .transition(t)
         .style("opacity", 1);
 
-      d3.csv("R/prop_data.csv", function(data) {
+      d3.csv("prop_data.csv", function(data) {
         d3.selectAll("path#b" + data.id)
           .transition(t)
           .style("opacity", 0.3);
@@ -132,7 +132,7 @@ function createFigure() {
         .transition()
         .duration(800)
         .ease(d3.easeQuadInOut);
-      d3.csv("R/prop_data.csv", function(data) {
+      d3.csv("prop_data.csv", function(data) {
         d3.selectAll("path#b" + data.id)
           .transition(t)
           .style("opacity", 1);
