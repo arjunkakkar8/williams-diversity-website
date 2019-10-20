@@ -1,5 +1,4 @@
-var map, figure, viewportHeight, viewportWidth;
-var margin = 5;
+var map, figure;
 
 function setup() {
   map = d3
@@ -22,15 +21,14 @@ function basemap() {
   );
 
   map
-    .attr("width", viewportWidth - 2 * margin + "px")
-    .attr("height", viewportHeight - 2 * margin + "px");
+    .attr("viewBox", [0, 0, viewportWidth, viewportHeight])
+    .attr("preserveAspectRatio", "xMinYMin meet")
+    .attr("width", "100%")
+    .attr("height", "100%");
 
   projection = d3
     .geoMercator()
-    .fitExtent(
-      [[margin, margin], [viewportWidth - margin, viewportHeight - margin]],
-      buildingData
-    );
+    .fitExtent([[0, 0], [viewportWidth, viewportHeight]], buildingData);
 
   geoGenerator = d3.geoPath().projection(projection);
 
@@ -40,7 +38,7 @@ function basemap() {
     .remove();
 
   // Make buildings
-  d3.select("#map-container g.buildings")
+  /*d3.select("#map-container g.buildings")
     .selectAll("path")
     .data(buildingData.features)
     .enter()
@@ -49,16 +47,39 @@ function basemap() {
     .attr("id", function(d) {
       return "b" + d.properties.osm_id;
     })
-    .style("opacity", 0.3);
+    .style("opacity", 0.3);*/
+
+  buildingselection = d3.select("#map-container g.buildings").append("path");
+  buildingselection.attr("d", "").attr("opacity", 0.3);
+  buildingData.features.map( function(feature){
+    buildingselection.attr("d", buildingselection.attr("d")+" "+geoGenerator(feature));
+  })
+
+  // Add class to housing buildings
+  d3.csv("R/prop_data.csv", function(data) {
+    return Number(data.id);
+  })
+  .then(function(ids){
+    buildingData.features.map( function(feature){
+      if(ids.includes(feature.properties.osm_id)) {
+        d3.select("#map-container g.buildings")
+        .append("path")
+        .attr("d", geoGenerator(feature))
+        .attr("id", "b"+feature.properties.osm_id)
+        .attr("class", "housing-building")
+        .style("opacity", 0.3)
+      }
+    })
+  })
+
+  
 
   // Make roads
-  d3.select("#map-container g.roads")
-    .selectAll("path")
-    .data(roadData.features)
-    .enter()
-    .append("path")
-    .attr("d", geoGenerator)
-    .style("opacity", 0.4);
+  roadselection = d3.select("#map-container g.roads").append("path");
+  roadselection.attr("d", "").attr("opacity", 0.3);
+  roadData.features.map(function(elem) {
+    roadselection.attr("d", roadselection.attr("d") + " " + geoGenerator(elem));
+  });
 }
 
 function createFigure() {
@@ -115,28 +136,34 @@ function createFigure() {
     function step2() {
       var t = d3
         .transition()
-        .duration(400)
+        .duration(2000)
         .ease(d3.easeQuadInOut);
+
       d3.select("div.housing")
         .transition(t)
         .style("opacity", 1);
 
-      d3.csv("R/prop_data.csv", function(data) {
-        d3.selectAll("path#b" + data.id)
-          .transition(t)
-          .style("opacity", 0.3);
-      });
+      d3.selectAll(".housing-building")
+        .transition(t)
+        .style("opacity", 0.3);
+
+      d3.select("#map-container")
+      .transition(t)
+      .attr("transform", "scale(1)");
     },
     function step3() {
       var t = d3
         .transition()
-        .duration(800)
+        .duration(2000)
         .ease(d3.easeQuadInOut);
-      d3.csv("R/prop_data.csv", function(data) {
-        d3.selectAll("path#b" + data.id)
-          .transition(t)
-          .style("opacity", 1);
-      });
+
+      d3.selectAll(".housing-building")
+        .transition(t)
+        .style("opacity", 1);
+
+      d3.select("#map-container")
+        .transition(t)
+        .attr("transform", "scale(1.3)");
     }
   ];
 
