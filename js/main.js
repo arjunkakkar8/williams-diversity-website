@@ -38,41 +38,30 @@ function basemap() {
     .remove();
 
   // Make buildings
-  /*d3.select("#map-container g.buildings")
-    .selectAll("path")
-    .data(buildingData.features)
-    .enter()
-    .append("path")
-    .attr("d", geoGenerator)
-    .attr("id", function(d) {
-      return "b" + d.properties.osm_id;
-    })
-    .style("opacity", 0.3);*/
-
   buildingselection = d3.select("#map-container g.buildings").append("path");
   buildingselection.attr("d", "").attr("opacity", 0.3);
-  buildingData.features.map( function(feature){
-    buildingselection.attr("d", buildingselection.attr("d")+" "+geoGenerator(feature));
-  })
+  buildingData.features.map(function(feature) {
+    buildingselection.attr(
+      "d",
+      buildingselection.attr("d") + " " + geoGenerator(feature)
+    );
+  });
 
-  // Add class to housing buildings
+  // Add another copy of housing buildings
   d3.csv("R/prop_data.csv", function(data) {
     return Number(data.id);
-  })
-  .then(function(ids){
-    buildingData.features.map( function(feature){
-      if(ids.includes(feature.properties.osm_id)) {
+  }).then(function(ids) {
+    buildingData.features.map(function(feature) {
+      if (ids.includes(feature.properties.osm_id)) {
         d3.select("#map-container g.buildings")
-        .append("path")
-        .attr("d", geoGenerator(feature))
-        .attr("id", "b"+feature.properties.osm_id)
-        .attr("class", "housing-building")
-        .style("opacity", 0.3)
+          .append("path")
+          .attr("d", geoGenerator(feature))
+          .attr("id", "b" + feature.properties.osm_id)
+          .attr("class", "housing-building")
+          .style("opacity", 0);
       }
-    })
-  })
-
-  
+    });
+  });
 
   // Make roads
   roadselection = d3.select("#map-container g.roads").append("path");
@@ -145,11 +134,11 @@ function createFigure() {
 
       d3.selectAll(".housing-building")
         .transition(t)
-        .style("opacity", 0.3);
+        .style("opacity", 0);
 
       d3.select("#map-container")
-      .transition(t)
-      .attr("transform", "scale(1)");
+        .transition(t)
+        .attr("transform", "scale(1)");
     },
     function step3() {
       var t = d3
