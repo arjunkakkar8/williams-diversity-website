@@ -1,13 +1,22 @@
-var map, figure;
+var map, figure, viewportHeight, viewportWidth;
+var fyids = [214110776, 214110967, 214111011];
 
 function setup() {
   map = d3
     .select("#main-chart")
     .append("svg")
+    .attr("id", "background")
+    .attr("width", "100vw")
+    .attr("height", "100vh")
+    .append("svg")
     .attr("id", "map-container");
 
   map.append("g").attr("class", "buildings");
   map.append("g").attr("class", "roads");
+  map.append("g").attr("class", "popups");
+  d3.select("#map-container g.buildings")
+    .append("g")
+    .attr("id", "housing-container");
 }
 
 function basemap() {
@@ -22,7 +31,7 @@ function basemap() {
 
   map
     .attr("viewBox", [0, 0, viewportWidth, viewportHeight])
-    .attr("preserveAspectRatio", "xMinYMin meet")
+    .attr("preserveAspectRatio", "xMidYMid meet")
     .attr("width", "100%")
     .attr("height", "100%");
 
@@ -53,11 +62,18 @@ function basemap() {
   }).then(function(ids) {
     buildingData.features.map(function(feature) {
       if (ids.includes(feature.properties.osm_id)) {
-        d3.select("#map-container g.buildings")
+        d3.select("#map-container g.buildings g#housing-container")
           .append("path")
           .attr("d", geoGenerator(feature))
           .attr("id", "b" + feature.properties.osm_id)
-          .attr("class", "housing-building")
+          .attr("class", function(d) {
+            if (fyids.includes(feature.properties.osm_id)) {
+              type = "first-year";
+            } else {
+              type = "upper-class";
+            }
+            return "housing-building " + type;
+          })
           .style("opacity", 0);
       }
     });
@@ -136,7 +152,7 @@ function createFigure() {
         .transition(t)
         .style("opacity", 0);
 
-      d3.select("#map-container")
+      d3.select("#background")
         .transition(t)
         .attr("transform", "scale(1)");
     },
@@ -150,9 +166,86 @@ function createFigure() {
         .transition(t)
         .style("opacity", 1);
 
-      d3.select("#map-container")
+      d3.select("#background")
         .transition(t)
-        .attr("transform", "scale(1.3)");
+        .attr(
+          "transform",
+          "scale(1.3) translate(0, " + viewportHeight * 0.06 + ")"
+        );
+
+      var t = d3
+        .transition()
+        .duration(400)
+        .ease(d3.easeQuadInOut);
+
+      d3.select("g.popups")
+        .selectAll("text")
+        .transition(t)
+        .style("opacity", 0);
+
+      d3.select("g.popups")
+        .selectAll("circle")
+        .transition(t)
+        .style("opacity", 0);
+    },
+    function step4() {
+      var t = d3
+        .transition()
+        .duration(2000)
+        .ease(d3.easeQuadInOut);
+
+      d3.selectAll(".upper-class")
+        .transition(t)
+        .style("opacity", 0);
+
+      d3.select("#background")
+        .transition(t)
+        .attr(
+          "transform",
+          "scale(1.5) translate(" +
+            -viewportWidth * 0.1 +
+            ", " +
+            viewportHeight * 0.1 +
+            ")"
+        );
+
+      t = d3
+        .transition()
+        .delay(2050)
+        .duration(1000)
+        .ease(d3.easeQuadInOut);
+
+      if (document.getElementsByClassName("popup-prop-chart").length == 0) {
+        d3.csv("R/prop_data.csv", function(data) {
+          if (fyids.includes(Number(data.id))) {
+            createPropChart(data);
+          }
+        }).then(function() {
+          d3.select("g.popups")
+            .selectAll("text")
+            .transition(t)
+            .style("opacity", 1);
+
+          d3.select("g.popups")
+            .selectAll("circle")
+            .transition()
+            .duration(10)
+            .style("opacity", 0.6)
+            .delay(d => 2050 + Math.sqrt(d.index) * 250);
+        });
+      } else {
+        d3.select("g.popups")
+          .selectAll("text")
+          .transition(t)
+          .style("opacity", 1);
+
+        d3.select("g.popups")
+          .selectAll("circle")
+          .transition()
+          .duration(10)
+          .style("opacity", 0.6)
+          .delay(d => 2050 + Math.sqrt(d.index) * 250);
+      }
     }
   ];
 
@@ -175,7 +268,6 @@ function selectionToArray(selection) {
 }
 
 function waypoints() {
-  var container = document.querySelector("#map-container");
   var triggers = selectionToArray(
     document.querySelectorAll("#overlay .trigger")
   );
@@ -197,9 +289,5 @@ function waypoints() {
 
 setup();
 basemap();
-createPropChart();
+createMainPropChart();
 waypoints();
-window.addEventListener("resize", function() {
-  basemap();
-  waypoints();
-});

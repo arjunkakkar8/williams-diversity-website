@@ -1,4 +1,115 @@
-function createPropChart() {
+function createPropChart(in_data) {
+  
+  building_el = document.getElementById('b'+in_data.id);
+
+  var width = 600,
+    height = 400;
+
+  const data = [
+    { name: "Asian", value: Math.round(in_data.p_asi*100) },
+    { name: "Black", value: Math.round(in_data.p_bla*100) },
+    { name: "Hispanic", value: Math.round(in_data.p_lat*100) },
+    { name: "White", value: Math.round(in_data.p_whi*100) }
+  ];
+
+  var svg = d3
+    .select("#map-container g.popups")
+    .append("svg")
+    .attr("id", "b"+in_data.id+"-prop-chart")
+    .attr("class", "popup-prop-chart")
+    .attr("width", "200px")
+    .attr("height", "100px")
+    .attr("x", building_el.getBBox().x)
+    .attr("y", building_el.getBBox().y - 100)
+    .attr("viewBox", [0, 0, width, height])
+    .attr("preserveAspectRatio", "xMinYMin meet");
+    
+  gradient = svg
+  .append('defs')
+  .append("radialGradient")
+  .attr("id", "RadialGradient")
+  
+  gradient
+  .append("stop")
+  .attr("offset", "0%")
+  .attr("stop-color", "rgba(0, 0, 0, .5)")
+
+  gradient
+  .append("stop")
+  .attr("offset", "100%")
+  .attr("stop-color", "rgba(0, 0, 0, 0)")
+  
+  /*svg
+  .append('rect')
+  .attr("width", "100%")
+  .attr("height", "100%")
+  .attr("fill", "url(#RadialGradient)")*/
+
+  color = d3
+    .scaleOrdinal()
+    .domain(data.map(d => d.name))
+    .range(
+      d3
+        .quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), data.length)
+        .reverse()
+    );
+
+    function createCircData(width, num, x, y) {
+      circData = [];
+      radius = (0.8 * width) / 8;
+      for (var i = 0; i < num; i++) {
+        colNum = i % 4;
+        rowNum = Math.floor(i / 4);
+        circData.push({
+          xval: x - (0.8 * width) / 2 + 2 * colNum * radius,
+          yval: y - 2 * rowNum * radius,
+          index: i
+        });
+      }
+      return circData;
+    }
+
+    createCircles = function(num, x, y, width, color, value) {
+      radius = (0.8 * width) / 8;
+      circData = createCircData(width, num, x, y);
+      currentg = svg.append("g").attr("id", value + "PropPlotDots");
+  
+      currentg
+        .selectAll("circle")
+        .data(circData)
+        .enter()
+        .append("circle")
+        .attr("cx", d => d.xval)
+        .attr("cy", d => d.yval)
+        .attr("r", radius)
+        .attr("fill", color)
+        .style("opacity", 0);
+  
+      currentg
+        .append("text")
+        .attr("font-family", "georgia")
+        .attr("font-size", 24)
+        .attr("text-anchor", "middle")
+        .text(value)
+        .attr("x", x - radius)
+        .attr("y", y + 3.3 * radius)
+        .attr("fill", color)
+        .style("opacity", 0);
+    };
+  
+    data.map(function(d, i) {
+      createCircles(
+        d.value,
+        ((i + 1) * width) / 5,
+        350,
+        width / 5,
+        color(d.name),
+        d.name
+      );
+    });
+}
+
+function createMainPropChart() {
   const data = [
     { name: "Asian", value: 22 },
     { name: "Black", value: 10 },

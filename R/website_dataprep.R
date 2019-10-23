@@ -7,6 +7,9 @@ merged_data <- read.csv('compiled_2017.csv') %>%
             by = c('Entry', 'Name', 'predrace', 'Year', 'firstname', 'surname'), 
             suffix = c('_2017', '_2018'))
 
+levels(merged_data$Room_2017) <- c("Agard", "Mission", "Brooks", "Bryant", "Carter", "Chadbourne", "Currier", "Dodd", "Doughty", "East", "Fayerweather", "Fitch", "Garfield", "Gladden", "Goodrich", "Horn", "Hubbell", "Lambert", "Lehman", "Mark Hopkins", "Milham", "Mission", "Morgan", "Parsons", "Perry", "Poker Flats", "Prospect", "Sage", "Sewall", "Spencer", "Susan Hopkins", "Thompson", "Tyler", "Tyler Annex", "West", "Williams", "Wood", "Woodbridge")
+
+
 # Separate Tyler and Tyler Annex, and AP and MD
 building_ids <- data.frame(name = levels(merged_data$Room_2017),
                            id = c(214111686,214110776,214111379,214111531,
@@ -14,7 +17,7 @@ building_ids <- data.frame(name = levels(merged_data$Room_2017),
                                   214111268,214110540,214110555,214110473,
                                   214111754,214111432,214110526,214111485,
                                   214110490,214111373,214110694,214111593,
-                                  214111395,214110776,214110800,214110533,
+                                  214111395,214110800,214110533,
                                   214111577,214110525,214110511,214111011,
                                   214110510,214111362,214111342,214110722,
                                   214111107,214111107,214111042,214110967,
