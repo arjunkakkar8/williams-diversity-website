@@ -1,9 +1,16 @@
+const collegeData = [
+  { name: "Asian", value: 22 },
+  { name: "Black", value: 10 },
+  { name: "Hispanic", value: 12 },
+  { name: "White", value: 56 }
+];
+
 function createPropChart(in_data) {
   
   building_el = document.getElementById('b'+in_data.id);
 
   var width = 600,
-    height = 400;
+    height = 500;
 
   const data = [
     { name: "Asian", value: Math.round(in_data.p_asi*100) },
@@ -17,10 +24,9 @@ function createPropChart(in_data) {
     .append("svg")
     .attr("id", "b"+in_data.id+"-prop-chart")
     .attr("class", "popup-prop-chart")
-    .attr("width", "200px")
-    .attr("height", "100px")
+    .attr("width", "400")
     .attr("x", building_el.getBBox().x)
-    .attr("y", building_el.getBBox().y - 100)
+    .attr("y", building_el.getBBox().y - 200)
     .attr("viewBox", [0, 0, width, height])
     .attr("preserveAspectRatio", "xMinYMin meet");
     
@@ -54,7 +60,7 @@ function createPropChart(in_data) {
         .reverse()
     );
 
-    function createCircData(width, num, x, y) {
+    function createCircData(width, num, x, y, index) {
       circData = [];
       radius = (0.8 * width) / 8;
       for (var i = 0; i < num; i++) {
@@ -63,15 +69,16 @@ function createPropChart(in_data) {
         circData.push({
           xval: x - (0.8 * width) / 2 + 2 * colNum * radius,
           yval: y - 2 * rowNum * radius,
-          index: i
+          index: i,
+          op: ((i <= collegeData[index].value) ? 0.6 : 1)
         });
       }
       return circData;
     }
 
-    createCircles = function(num, x, y, width, color, value) {
+    createCircles = function(num, x, y, width, color, value, index) {
       radius = (0.8 * width) / 8;
-      circData = createCircData(width, num, x, y);
+      circData = createCircData(width, num, x, y, index);
       currentg = svg.append("g").attr("id", value + "PopupPropPlotDots");
   
       currentg
@@ -101,21 +108,17 @@ function createPropChart(in_data) {
       createCircles(
         d.value,
         ((i + 1) * width) / 5,
-        350,
+        400,
         width / 5,
         color(d.name),
-        d.name
+        d.name,
+        i
       );
     });
 }
 
 function createMainPropChart() {
-  const data = [
-    { name: "Asian", value: 22 },
-    { name: "Black", value: 10 },
-    { name: "Hispanic", value: 12 },
-    { name: "White", value: 56 }
-  ];
+  
 
   var width = 600,
     height = 400;
@@ -130,10 +133,10 @@ function createMainPropChart() {
 
   color = d3
     .scaleOrdinal()
-    .domain(data.map(d => d.name))
+    .domain(collegeData.map(d => d.name))
     .range(
       d3
-        .quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), data.length)
+        .quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), collegeData.length)
         .reverse()
     );
 
@@ -178,7 +181,7 @@ function createMainPropChart() {
       .attr("fill", color);
   };
 
-  data.map(function(d, i) {
+  collegeData.map(function(d, i) {
     createCircles(
       d.value,
       ((i + 1) * width) / 5,

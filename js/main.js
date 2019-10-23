@@ -1,4 +1,5 @@
-var map, figure, viewportHeight, viewportWidth;
+var map, figure;
+var width = 2000, height = 1400;
 var fyids = [214110776, 214110967, 214111011];
 
 function setup() {
@@ -20,24 +21,16 @@ function setup() {
 }
 
 function basemap() {
-  viewportWidth = Math.max(
-    document.documentElement.clientWidth,
-    window.innerWidth || 0
-  );
-  viewportHeight = Math.max(
-    document.documentElement.clientHeight,
-    window.innerHeight || 0
-  );
 
   map
-    .attr("viewBox", [0, 0, viewportWidth, viewportHeight])
+    .attr("viewBox", [0, 0, width, height])
     .attr("preserveAspectRatio", "xMidYMid meet")
-    .attr("width", "100%")
-    .attr("height", "100%");
+    //.attr("width", "100%")
+    //.attr("height", "100%");
 
   projection = d3
     .geoMercator()
-    .fitExtent([[0, 0], [viewportWidth, viewportHeight]], buildingData);
+    .fitExtent([[0, 0], [width, height]], buildingData);
 
   geoGenerator = d3.geoPath().projection(projection);
 
@@ -170,7 +163,7 @@ function createFigure() {
         .transition(t)
         .attr(
           "transform",
-          "scale(1.3) translate(0, " + viewportHeight * 0.06 + ")"
+          "scale(1.3) translate(0, " + height * 0.06 + ")"
         );
 
       var t = d3
@@ -203,9 +196,9 @@ function createFigure() {
         .attr(
           "transform",
           "scale(1.5) translate(" +
-            -viewportWidth * 0.1 +
+            -width * 0.1 +
             ", " +
-            viewportHeight * 0.1 +
+            height * 0.1 +
             ")"
         );
 
@@ -230,7 +223,7 @@ function createFigure() {
             .selectAll("circle")
             .transition()
             .duration(10)
-            .style("opacity", 0.6)
+            .style("opacity", d => d.op)
             .delay(d => 2050 + Math.sqrt(d.index) * 250);
         });
       } else {
@@ -243,7 +236,7 @@ function createFigure() {
           .selectAll("circle")
           .transition()
           .duration(10)
-          .style("opacity", 0.6)
+          .style("opacity", d => d.op)
           .delay(d => 2050 + Math.sqrt(d.index) * 250);
       }
     }
