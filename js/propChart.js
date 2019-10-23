@@ -72,7 +72,7 @@ function createPropChart(in_data) {
     createCircles = function(num, x, y, width, color, value) {
       radius = (0.8 * width) / 8;
       circData = createCircData(width, num, x, y);
-      currentg = svg.append("g").attr("id", value + "PropPlotDots");
+      currentg = svg.append("g").attr("id", value + "PopupPropPlotDots");
   
       currentg
         .selectAll("circle")
