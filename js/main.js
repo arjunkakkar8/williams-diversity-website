@@ -1,5 +1,6 @@
 var map, figure;
-var width = 2000, height = 1400;
+var width = 2000,
+  height = 1400;
 var fyids = [214110776, 214110967, 214111011];
 
 function setup() {
@@ -14,19 +15,23 @@ function setup() {
 
   map.append("g").attr("class", "buildings");
   map.append("g").attr("class", "roads");
-  map.append("g").attr("class", "popups");
+  map
+    .append("g")
+    .attr("class", "popups")
+    .append("g")
+    .attr("class", "line-guide")
+    .style("opacity", 0);
   d3.select("#map-container g.buildings")
     .append("g")
     .attr("id", "housing-container");
 }
 
 function basemap() {
-
   map
     .attr("viewBox", [0, 0, width, height])
-    .attr("preserveAspectRatio", "xMidYMid meet")
-    //.attr("width", "100%")
-    //.attr("height", "100%");
+    .attr("preserveAspectRatio", "xMidYMid meet");
+  //.attr("width", "100%")
+  //.attr("height", "100%");
 
   projection = d3
     .geoMercator()
@@ -161,10 +166,7 @@ function createFigure() {
 
       d3.select("#background")
         .transition(t)
-        .attr(
-          "transform",
-          "scale(1.3) translate(0, " + height * 0.06 + ")"
-        );
+        .attr("transform", "scale(1.3) translate(0, " + height * 0.06 + ")");
 
       var t = d3
         .transition()
@@ -173,6 +175,10 @@ function createFigure() {
 
       d3.select("g.popups")
         .selectAll("text")
+        .transition(t)
+        .style("opacity", 0);
+
+      d3.select("g.line-guide")
         .transition(t)
         .style("opacity", 0);
 
@@ -195,11 +201,7 @@ function createFigure() {
         .transition(t)
         .attr(
           "transform",
-          "scale(1.5) translate(" +
-            -width * 0.1 +
-            ", " +
-            height * 0.1 +
-            ")"
+          "scale(1.5) translate(" + -width * 0.1 + ", " + height * 0.1 + ")"
         );
 
       t = d3
@@ -219,6 +221,10 @@ function createFigure() {
             .transition(t)
             .style("opacity", 1);
 
+          d3.select("g.line-guide")
+            .transition(t)
+            .style("opacity", 1);
+
           d3.select("g.popups")
             .selectAll("circle")
             .transition()
@@ -229,6 +235,10 @@ function createFigure() {
       } else {
         d3.select("g.popups")
           .selectAll("text")
+          .transition(t)
+          .style("opacity", 1);
+
+        d3.select("g.line-guide")
           .transition(t)
           .style("opacity", 1);
 

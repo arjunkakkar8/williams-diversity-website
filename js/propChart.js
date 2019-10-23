@@ -6,45 +6,61 @@ const collegeData = [
 ];
 
 function createPropChart(in_data) {
-  
-  building_el = document.getElementById('b'+in_data.id);
+  building_el = document.getElementById("b" + in_data.id);
+
+  bx = building_el.getBBox().x + building_el.getBBox().width / 2;
+  by = building_el.getBBox().y + building_el.getBBox().height / 2;
+  switch (in_data.Room_2017) {
+    case "Mission":
+      px = 1100;
+      py = by - 300;
+      break;
+    case "Williams":
+      px = 1100;
+      py = by - 200;
+      break;
+    case "Sage":
+      px = 1100;
+      py = by + 25;
+      break;
+  }
 
   var width = 600,
     height = 500;
 
   const data = [
-    { name: "Asian", value: Math.round(in_data.p_asi*100) },
-    { name: "Black", value: Math.round(in_data.p_bla*100) },
-    { name: "Hispanic", value: Math.round(in_data.p_lat*100) },
-    { name: "White", value: Math.round(in_data.p_whi*100) }
+    { name: "Asian", value: Math.round(in_data.p_asi * 100) },
+    { name: "Black", value: Math.round(in_data.p_bla * 100) },
+    { name: "Hispanic", value: Math.round(in_data.p_lat * 100) },
+    { name: "White", value: Math.round(in_data.p_whi * 100) }
   ];
 
   var svg = d3
     .select("#map-container g.popups")
     .append("svg")
-    .attr("id", "b"+in_data.id+"-prop-chart")
+    .attr("id", "b" + in_data.id + "-prop-chart")
     .attr("class", "popup-prop-chart")
-    .attr("width", "400")
-    .attr("x", building_el.getBBox().x)
-    .attr("y", building_el.getBBox().y - 200)
+    .attr("width", "300")
+    .attr("x", px)
+    .attr("y", py)
     .attr("viewBox", [0, 0, width, height])
     .attr("preserveAspectRatio", "xMinYMin meet");
-    
+
   gradient = svg
-  .append('defs')
-  .append("radialGradient")
-  .attr("id", "RadialGradient")
-  
-  gradient
-  .append("stop")
-  .attr("offset", "0%")
-  .attr("stop-color", "rgba(0, 0, 0, .5)")
+    .append("defs")
+    .append("radialGradient")
+    .attr("id", "RadialGradient");
 
   gradient
-  .append("stop")
-  .attr("offset", "100%")
-  .attr("stop-color", "rgba(0, 0, 0, 0)")
-  
+    .append("stop")
+    .attr("offset", "85%")
+    .attr("stop-color", "rgba(0, 0, 0, .5)");
+
+  gradient
+    .append("stop")
+    .attr("offset", "100%")
+    .attr("stop-color", "rgba(0, 0, 0, 0)");
+
   /*svg
   .append('rect')
   .attr("width", "100%")
@@ -60,66 +76,83 @@ function createPropChart(in_data) {
         .reverse()
     );
 
-    function createCircData(width, num, x, y, index) {
-      circData = [];
-      radius = (0.8 * width) / 8;
-      for (var i = 0; i < num; i++) {
-        colNum = i % 4;
-        rowNum = Math.floor(i / 4);
-        circData.push({
-          xval: x - (0.8 * width) / 2 + 2 * colNum * radius,
-          yval: y - 2 * rowNum * radius,
-          index: i,
-          op: ((i <= collegeData[index].value) ? 0.6 : 1)
-        });
-      }
-      return circData;
+  function createCircData(width, num, x, y, index) {
+    circData = [];
+    radius = (0.8 * width) / 8;
+    for (var i = 0; i < num; i++) {
+      colNum = i % 4;
+      rowNum = Math.floor(i / 4);
+      circData.push({
+        xval: x - (0.8 * width) / 2 + 2 * colNum * radius,
+        yval: y - 2 * rowNum * radius,
+        index: i,
+        op: i <= collegeData[index].value ? 0.6 : 1
+      });
     }
+    return circData;
+  }
 
-    createCircles = function(num, x, y, width, color, value, index) {
-      radius = (0.8 * width) / 8;
-      circData = createCircData(width, num, x, y, index);
-      currentg = svg.append("g").attr("id", value + "PopupPropPlotDots");
-  
-      currentg
-        .selectAll("circle")
-        .data(circData)
-        .enter()
-        .append("circle")
-        .attr("cx", d => d.xval)
-        .attr("cy", d => d.yval)
-        .attr("r", radius)
-        .attr("fill", color)
-        .style("opacity", 0);
-  
-      currentg
-        .append("text")
-        .attr("font-family", "georgia")
-        .attr("font-size", 24)
-        .attr("text-anchor", "middle")
-        .text(value)
-        .attr("x", x - radius)
-        .attr("y", y + 3.3 * radius)
-        .attr("fill", color)
-        .style("opacity", 0);
-    };
-  
-    data.map(function(d, i) {
-      createCircles(
-        d.value,
-        ((i + 1) * width) / 5,
-        400,
-        width / 5,
-        color(d.name),
-        d.name,
-        i
-      );
-    });
+  createCircles = function(num, x, y, width, color, value, index) {
+    radius = (0.8 * width) / 8;
+    circData = createCircData(width, num, x, y, index);
+    currentg = svg.append("g").attr("id", value + "PopupPropPlotDots");
+
+    currentg
+      .selectAll("circle")
+      .data(circData)
+      .enter()
+      .append("circle")
+      .attr("cx", d => d.xval)
+      .attr("cy", d => d.yval)
+      .attr("r", radius)
+      .attr("fill", color)
+      .style("opacity", 0);
+
+    currentg
+      .append("text")
+      .attr("font-family", "georgia")
+      .attr("font-size", 24)
+      .attr("text-anchor", "middle")
+      .text(value)
+      .attr("x", x - radius)
+      .attr("y", y + 3.3 * radius)
+      .attr("fill", color)
+      .style("opacity", 0);
+  };
+
+  data.map(function(d, i) {
+    createCircles(
+      d.value,
+      ((i + 1) * width) / 5,
+      400,
+      width / 5,
+      color(d.name),
+      d.name,
+      i
+    );
+  });
+
+  guide = d3.select("g.line-guide");
+  guide
+    .append("path")
+    .attr(
+      "d",
+      "M" +
+        bx +
+        " " +
+        by +
+        " L" +
+        px +
+        " " +
+        eval(py + 230) +
+        " L" +
+        eval(px + 280) +
+        " " +
+        eval(py + 230)
+    );
 }
 
 function createMainPropChart() {
-  
-
   var width = 600,
     height = 400;
 
@@ -136,7 +169,10 @@ function createMainPropChart() {
     .domain(collegeData.map(d => d.name))
     .range(
       d3
-        .quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), collegeData.length)
+        .quantize(
+          t => d3.interpolateSpectral(t * 0.8 + 0.1),
+          collegeData.length
+        )
         .reverse()
     );
 
