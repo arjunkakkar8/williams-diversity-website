@@ -78,7 +78,7 @@ function createPropChart(in_data) {
     return circData;
   }
 
-  createCircles = function(num, x, y, width, color, value, index) {
+  function createCircles(num, x, y, width, color, value, index) {
     radius = (0.8 * width) / 8;
     circData = createCircData(width, num, x, y, index);
     currentg = svg.append("g").attr("id", value + "PopupPropPlotDots");
@@ -176,7 +176,7 @@ function createMainPropChart() {
     }
     return circData;
   }
-  createCircles = function(num, x, y, width, color, value) {
+  function createCircles(num, x, y, width, color, value) {
     radius = (0.8 * width) / 8;
     circData = createCircData(width, num, x, y);
     currentg = svg.append("g").attr("id", value + "PropPlotDots");
