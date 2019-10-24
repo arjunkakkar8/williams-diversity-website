@@ -5,10 +5,17 @@ const collegeData = [
   { name: "White", value: 56 }
 ];
 
+const usData = [
+  { name: "Asian", value: 6 },
+  { name: "Black", value: 13 },
+  { name: "Hispanic", value: 18 },
+  { name: "White", value: 60 }
+];
+
 function createPropChart(in_data) {
   building_el = document.getElementById("b" + in_data.id);
 
-  bx = building_el.getBBox().x + building_el.getBBox().width / 2;
+  bx = building_el.getBBox().x + building_el.getBBox().width * 0.6;
   by = building_el.getBBox().y + building_el.getBBox().height / 2;
   switch (in_data.Room_2017) {
     case "Mission":
@@ -46,27 +53,6 @@ function createPropChart(in_data) {
     .attr("viewBox", [0, 0, width, height])
     .attr("preserveAspectRatio", "xMinYMin meet");
 
-  gradient = svg
-    .append("defs")
-    .append("radialGradient")
-    .attr("id", "RadialGradient");
-
-  gradient
-    .append("stop")
-    .attr("offset", "85%")
-    .attr("stop-color", "rgba(0, 0, 0, .5)");
-
-  gradient
-    .append("stop")
-    .attr("offset", "100%")
-    .attr("stop-color", "rgba(0, 0, 0, 0)");
-
-  /*svg
-  .append('rect')
-  .attr("width", "100%")
-  .attr("height", "100%")
-  .attr("fill", "url(#RadialGradient)")*/
-
   color = d3
     .scaleOrdinal()
     .domain(data.map(d => d.name))
@@ -79,14 +65,14 @@ function createPropChart(in_data) {
   function createCircData(width, num, x, y, index) {
     circData = [];
     radius = (0.8 * width) / 8;
-    for (var i = 0; i < num; i++) {
+    for (var i = 0; i < Math.max(num, collegeData[index].value); i++) {
       colNum = i % 4;
       rowNum = Math.floor(i / 4);
       circData.push({
         xval: x - (0.8 * width) / 2 + 2 * colNum * radius,
         yval: y - 2 * rowNum * radius,
         index: i,
-        op: i <= collegeData[index].value ? 0.6 : 1
+        op: i < collegeData[index].value ? 0.6 : 1
       });
     }
     return circData;
@@ -105,7 +91,7 @@ function createPropChart(in_data) {
       .attr("cx", d => d.xval)
       .attr("cy", d => d.yval)
       .attr("r", radius)
-      .attr("fill", color)
+      .attr("fill", d => (d.index <= num ? color : "rgba(134, 134, 134, 0.5)"))
       .style("opacity", 0);
 
     currentg
@@ -229,22 +215,16 @@ function createMainPropChart() {
   });
 
   function updatePropChart(toggle) {
-    const data1 = [
-      { name: "Asian", value: 22 },
-      { name: "Black", value: 10 },
-      { name: "Hispanic", value: 12 },
-      { name: "White", value: 56 }
-    ];
-
-    const data2 = [
-      { name: "Asian", value: 6 },
-      { name: "Black", value: 13 },
-      { name: "Hispanic", value: 18 },
-      { name: "White", value: 60 }
-    ];
+    const data1 = collegeData,
+      data2 = usData;
 
     function updater(name, newVal, i) {
-      circData = createCircData(width / 5, newVal, ((i + 1) * width) / 5, 350);
+      circData = createCircData(
+        width / 5,
+        Math.max(newVal, collegeData[i].value),
+        ((i + 1) * width) / 5,
+        350
+      );
 
       prevVal = d3
         .select("#" + name + "PropPlotDots")
@@ -262,9 +242,9 @@ function createMainPropChart() {
         .attr("cx", d => d.xval)
         .attr("cy", d => d.yval)
         .attr("r", radius)
-        .attr("fill", color(name))
         .style("opacity", 0)
         .transition()
+        .attr("fill", color(name))
         .style("opacity", 1)
         .duration(10)
         .delay(d => Math.sqrt(d.index - prevVal) * 200);
@@ -276,6 +256,22 @@ function createMainPropChart() {
         .duration(10)
         .delay(d => Math.sqrt(prevVal - d.index + 1) * 200)
         .remove();
+
+      if(newVal < collegeData[i].value) {
+      circles
+      .transition()
+      .duration(10)
+      .delay(d => Math.sqrt(prevVal - d.index + 1) * 200)
+      .attr("fill", d =>
+          d.index <= newVal ? color(name) : "rgba(134, 134, 134, 0.5)"
+        )
+      } else {
+        circles
+      .transition()
+      .duration(10)
+      .delay(d => Math.sqrt(d.index - usData[i].value) * 200)
+      .attr("fill", color(name));
+      }
     }
     eval("data" + toggle).map((d, i) => updater(d.name, d.value, i));
   }
