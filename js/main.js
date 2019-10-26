@@ -13,8 +13,8 @@ function setup() {
     .select("#main-chart")
     .append("svg")
     .attr("id", "background")
-    .attr("width", "100vw")
-    .attr("height", "100vh")
+    .attr("width", "100%")
+    .attr("height", "100%")
     .append("svg")
     .attr("id", "map-container");
 

@@ -12,6 +12,7 @@ div.intro {
 #main-chart {
     background-color: rgb(17, 20, 31);
     width: 100%;
+    height: 100%;
     position: fixed;
 }
 
