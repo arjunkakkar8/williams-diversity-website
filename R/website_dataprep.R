@@ -146,6 +146,6 @@ merged_data %>%
   rename(id_2018 = id) %>%
   group_by(Room_2017) %>%
   arrange(num, .by_group = TRUE) %>%
-  mutate(index = row_number())
+  mutate(index = row_number()) %>%
   write.csv(., file = 'movement_data.csv')
 

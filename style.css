@@ -5,6 +5,10 @@ body {
     padding: 0;
 }
 
+div.intro {
+    padding: 10% 25%;
+}
+
 #main-chart {
     background-color: rgb(17, 20, 31);
     width: 100%;
@@ -81,7 +85,7 @@ select{
     background-size: 15px;
     background-position: calc(3%) 80%;
     background-repeat: no-repeat;
-    background-color: #282d53ab;
+    background-color: rgb(40,45,83,0.67);
 }
 
 .housing{

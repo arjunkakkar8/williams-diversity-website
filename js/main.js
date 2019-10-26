@@ -46,14 +46,14 @@ function createMoveArrows() {
     x2 = end_el.getBBox().x + end_el.getBBox().width / 2;
     y2 = end_el.getBBox().y + end_el.getBBox().height / 2;
     //return "M" + x1 + " " + y1 + " L" + x2 + " " + y2;
-    return {index: row.index, num: row.num, x1: x1, x2: x2, y1: y1, y2: y2};
+    return { index: row.index, num: row.num, x1: x1, x2: x2, y1: y1, y2: y2 };
   }).then(function(data) {
     lineContainer
       .selectAll("path")
       .data(data)
       .enter()
       .append("path")
-      .attr("d", (d) => "M" + d.x1 + " " + d.y1 + " L" + d.x1 + " " + d.y1)
+      .attr("d", d => "M" + d.x1 + " " + d.y1 + " L" + d.x1 + " " + d.y1)
       .style("fill-opacity", 0)
       .style("stroke-width", d => Number(d.num) * 20)
       .style("stroke", "rgb(66, 58, 87)")
@@ -177,11 +177,10 @@ function basemap() {
   });
 
   // Make roads
-  roadselection = d3.select("#map-container g.roads").append("path");
-  roadselection.attr("d", "").attr("opacity", 0.3);
-  roadData.features.map(function(elem) {
-    roadselection.attr("d", roadselection.attr("d") + " " + geoGenerator(elem));
-  });
+  d3.select("#map-container g.roads")
+    .append("path")
+    .attr("opacity", 0.3)
+    .attr("d", geoGenerator(roadData));
 }
 
 function createFigure() {
@@ -191,14 +190,8 @@ function createFigure() {
         .transition()
         .duration(400)
         .ease(d3.easeQuadInOut);
-      d3.select("#overlay")
-        .transition(t)
-        .style(
-          "background",
-          "linear-gradient(to right, rgba(0, 0, 0, 0.5) 65%, rgba(0, 0, 0, 0.5) 80%"
-        );
 
-      d3.select("#body-container")
+      d3.select(".intro")
         .transition(t)
         .style("opacity", "0");
 
@@ -213,14 +206,7 @@ function createFigure() {
         .duration(400)
         .ease(d3.easeQuadInOut);
 
-      d3.select("#overlay")
-        .transition(t)
-        .style(
-          "background",
-          "linear-gradient(to right, rgba(0, 0, 0, 0) 65%, rgba(0, 0, 0, 0.5) 80%"
-        );
-
-      d3.select("#body-container")
+      d3.select(".intro")
         .transition(t)
         .style("opacity", "1");
 
@@ -231,18 +217,59 @@ function createFigure() {
         .style("opacity", 0.6)
         .delay(d => 50 + Math.sqrt(d.index) * 250);
 
-      d3.select("div.housing")
-        .transition(t)
-        .style("opacity", 0);
+      selector = document.getElementById("proportion-figure-selector");
+      if (selector.value == "The US") {
+        d3.select("#proportion-figure-selector")
+          .transition()
+          .duration(300)
+          .style("background-color", "rgb(237, 228, 54, 1)")
+          .transition()
+          .delay(300)
+          .duration(500)
+          .style("background-color", "rgb(40,45,83,0.67)");
+
+        selector.value = "The class";
+        selector.dispatchEvent(new Event("change"));
+      }
     },
     function step2() {
       var t = d3
         .transition()
         .duration(400)
         .ease(d3.easeQuadInOut);
-      d3.select("div.housing")
+
+      d3.select("#college-proportion-figure")
+        .selectAll("circle")
+        .transition()
+        .duration(10)
+        .style("opacity", 0.6)
+        .delay(d => 50 + Math.sqrt(d.index) * 250);
+
+      selector = document.getElementById("proportion-figure-selector");
+      if (selector.value == "The class") {
+        d3.select("#proportion-figure-selector")
+          .transition()
+          .duration(300)
+          .style("background-color", "rgb(237, 228, 54, 1)")
+          .transition()
+          .delay(300)
+          .duration(500)
+          .style("background-color", "rgb(40,45,83,0.67)");
+
+        selector.value = "The US";
+        selector.dispatchEvent(new Event("change"));
+      }
+
+      d3.select("#overlay")
         .transition(t)
-        .style("opacity", 1);
+        .style(
+          "background",
+          "linear-gradient(to right, rgba(0, 0, 0, 0.5) 65%, rgba(0, 0, 0, 0.5) 80%"
+        );
+
+      d3.select("#body-container")
+        .transition(t)
+        .style("opacity", "0");
 
       d3.selectAll(".housing-building")
         .transition(t)
@@ -260,17 +287,24 @@ function createFigure() {
     function step3() {
       var t = d3
         .transition()
-        .duration(2000)
-        .ease(d3.easeQuadInOut);
-
-      d3.select("#background")
-        .transition(t)
-        .attr("transform", "scale(1.3) translate(0, " + height * 0.06 + ")");
-
-      var t = d3
-        .transition()
         .duration(400)
         .ease(d3.easeQuadInOut);
+
+      d3.select("#overlay")
+        .transition(t)
+        .style(
+          "background",
+          "linear-gradient(to right, rgba(0, 0, 0, 0) 65%, rgba(0, 0, 0, 0.5) 80%"
+        );
+
+      d3.select("#college-proportion-figure")
+        .selectAll("circle")
+        .transition(t)
+        .style("opacity", "0");
+
+      d3.select("#body-container")
+        .transition(t)
+        .style("opacity", "1");
 
       d3.selectAll(".housing-building")
         .transition(t)
@@ -289,6 +323,15 @@ function createFigure() {
         .selectAll("circle")
         .transition(t)
         .style("opacity", 0);
+
+      var t = d3
+        .transition()
+        .duration(2000)
+        .ease(d3.easeQuadInOut);
+
+      d3.select("#background")
+        .transition(t)
+        .attr("transform", "scale(1.3) translate(0, " + height * 0.06 + ")");
     },
     function step4() {
       var t = d3
@@ -363,7 +406,7 @@ function createFigure() {
       d3.select(".line-container")
         .selectAll("path")
         .transition(t)
-        .attr("d", (d) => "M" + d.x1 + " " + d.y1 + " L" + d.x1 + " " + d.y1)
+        .attr("d", d => "M" + d.x1 + " " + d.y1 + " L" + d.x1 + " " + d.y1)
         .style("opacity", 0);
 
       d3.selectAll(".upper-class")
@@ -455,7 +498,7 @@ function createFigure() {
           }
           return value + d.index * 50;
         })
-        .attr("d", (d) => "M" + d.x1 + " " + d.y1 + " L" + d.x2 + " " + d.y2)
+        .attr("d", d => "M" + d.x1 + " " + d.y1 + " L" + d.x2 + " " + d.y2)
         .style("opacity", d => d.num * 10);
     }
   ];

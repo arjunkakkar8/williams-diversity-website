@@ -263,7 +263,7 @@ function createMainPropChart() {
       .duration(10)
       .delay(d => Math.sqrt(prevVal - d.index + 1) * 200)
       .attr("fill", d =>
-          d.index <= newVal ? color(name) : "rgba(134, 134, 134, 0.5)"
+          d.index < newVal ? color(name) : "rgba(134, 134, 134, 0.5)"
         )
       } else {
         circles
