@@ -14,7 +14,6 @@ const usData = [
 
 function createPropChart(in_data) {
   building_el = document.getElementById("b" + in_data.id);
-
   bx = building_el.getBBox().x + building_el.getBBox().width * 0.6;
   by = building_el.getBBox().y + building_el.getBBox().height / 2;
   switch (in_data.Room_2017) {
@@ -43,7 +42,7 @@ function createPropChart(in_data) {
   ];
 
   var svg = d3
-    .select("#map-container g.popups")
+    .select("#map-group g.popups")
     .append("svg")
     .attr("id", "b" + in_data.id + "-prop-chart")
     .attr("class", "popup-prop-chart")

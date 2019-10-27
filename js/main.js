@@ -16,7 +16,9 @@ function setup() {
     .attr("width", "100%")
     .attr("height", "100%")
     .append("svg")
-    .attr("id", "map-container");
+    .attr("id", "map-container")
+    .append("g")
+    .attr("id", "map-group");
 
   map.append("g").attr("class", "buildings");
   map.append("g").attr("class", "roads");
@@ -26,7 +28,7 @@ function setup() {
     .append("g")
     .attr("class", "line-guide")
     .style("opacity", 0);
-  d3.select("#map-container g.buildings")
+  d3.select("#map-group g.buildings")
     .append("g")
     .attr("id", "housing-container");
 
@@ -35,7 +37,7 @@ function setup() {
 
 function createMoveArrows() {
   lineContainer = d3
-    .select("#map-container")
+    .select("#map-group")
     .append("g")
     .attr("class", "line-container");
   d3.csv("R/movement_data.csv", function(row) {
@@ -128,7 +130,7 @@ function colorScale() {
 }
 
 function basemap() {
-  map
+  d3.select("#map-container")
     .attr("viewBox", [0, 0, width, height])
     .attr("preserveAspectRatio", "xMidYMid meet");
 
@@ -138,13 +140,8 @@ function basemap() {
 
   geoGenerator = d3.geoPath().projection(projection);
 
-  d3.selectAll("#map-container path")
-    .data({})
-    .exit()
-    .remove();
-
   // Make buildings
-  buildingselection = d3.select("#map-container g.buildings").append("path");
+  buildingselection = d3.select("#map-group g.buildings").append("path");
   buildingselection.attr("d", "").attr("opacity", 0.3);
   buildingData.features.map(function(feature) {
     buildingselection.attr(
@@ -159,7 +156,7 @@ function basemap() {
   }).then(function(ids) {
     buildingData.features.map(function(feature) {
       if (ids.includes(feature.properties.osm_id)) {
-        d3.select("#map-container g.buildings g#housing-container")
+        d3.select("#map-group g.buildings g#housing-container")
           .append("path")
           .attr("d", geoGenerator(feature))
           .attr("id", "b" + feature.properties.osm_id)
@@ -174,10 +171,13 @@ function basemap() {
           .style("opacity", 0);
       }
     });
+    createMainPropChart();
+    popupPropCharts();
+    createMoveArrows();
   });
 
   // Make roads
-  d3.select("#map-container g.roads")
+  d3.select("#map-group g.roads")
     .append("path")
     .attr("opacity", 0.3)
     .attr("d", geoGenerator(roadData));
@@ -280,9 +280,9 @@ function createFigure() {
         .duration(2000)
         .ease(d3.easeQuadInOut);
 
-      d3.select("#background")
+      d3.select("#map-group")
         .transition(t)
-        .attr("transform", "scale(1)");
+        .attr("transform", "scale(1) translate(0, 0)");
     },
     function step3() {
       var t = d3
@@ -329,9 +329,9 @@ function createFigure() {
         .duration(2000)
         .ease(d3.easeQuadInOut);
 
-      d3.select("#background")
+      d3.select("#map-group")
         .transition(t)
-        .attr("transform", "scale(1.3) translate(0, " + height * 0.06 + ")");
+        .attr("transform", "scale(1.3) translate(-300, " + eval(height * 0.1 - 210) + ")");
     },
     function step4() {
       var t = d3
@@ -339,11 +339,11 @@ function createFigure() {
         .duration(2000)
         .ease(d3.easeQuadInOut);
 
-      d3.select("#background")
+      d3.select("#map-group")
         .transition(t)
         .attr(
           "transform",
-          "scale(1.5) translate(" + -width * 0.1 + ", " + height * 0.1 + ")"
+          "scale(1.5) translate(" + eval(-500-width * 0.1) + ", " + eval(height * 0.25 - 350) + ")"
         );
 
       t = d3
@@ -418,11 +418,11 @@ function createFigure() {
         .duration(2000)
         .ease(d3.easeQuadInOut);
 
-      d3.select("#background")
+      d3.select("#map-group")
         .transition(t)
         .attr(
           "transform",
-          "scale(1.5) translate(" + -width * 0.1 + ", " + height * 0.1 + ")"
+          "scale(1.5) translate(" + eval(-500-width * 0.1) + ", " + eval(height * 0.25 - 350) + ")"
         );
 
       t = d3
@@ -453,9 +453,9 @@ function createFigure() {
         .duration(2000)
         .ease(d3.easeQuadInOut);
 
-      d3.select("#background")
+      d3.select("#map-group")
         .transition(t)
-        .attr("transform", "scale(1.3) translate(0, " + height * 0.06 + ")");
+        .attr("transform", "scale(1.3) translate(-300, " + eval(height * 0.1 - 210) + ")");
 
       var t = d3
         .transition()
@@ -543,7 +543,4 @@ function waypoints() {
 
 setup();
 basemap();
-createMainPropChart();
-popupPropCharts();
-createMoveArrows();
 waypoints();
