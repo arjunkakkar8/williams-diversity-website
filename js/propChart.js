@@ -19,20 +19,20 @@ function createPropChart(in_data) {
   switch (in_data.Room_2017) {
     case "Mission":
       px = 1100;
-      py = by - 300;
+      py = by - 400;
       break;
     case "Williams":
       px = 1100;
-      py = by - 200;
+      py = by - 300;
       break;
     case "Sage":
       px = 1100;
-      py = by + 25;
+      py = by - 75;
       break;
   }
 
   var width = 600,
-    height = 500;
+    height = 700;
 
   const data = [
     { name: "Asian", value: Math.round(in_data.p_asi * 100) },
@@ -110,7 +110,7 @@ function createPropChart(in_data) {
     createCircles(
       d.value,
       ((i + 1) * width) / 5,
-      400,
+      600,
       width / 5,
       color(d.name),
       d.name,
@@ -130,11 +130,11 @@ function createPropChart(in_data) {
         " L" +
         px +
         " " +
-        eval(py + 230) +
+        eval(py + 330) +
         " L" +
         eval(px + 280) +
         " " +
-        eval(py + 230)
+        eval(py + 330)
     );
 }
 

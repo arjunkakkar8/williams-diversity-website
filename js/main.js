@@ -68,6 +68,10 @@ function popupPropCharts() {
     if (fyids.includes(Number(data.id))) {
       createPropChart(data);
     }
+    console.log(data.Name);
+    if (data.Room_2017 == "Poker Flats"){
+      createPropChart(data);
+    }
   });
 }
 
@@ -291,7 +295,7 @@ function createFigure() {
 
       var t = d3
         .transition()
-        .duration(2000)
+        .duration(1000)
         .ease(d3.easeQuadInOut);
 
       d3.select("#map-group")
@@ -340,7 +344,7 @@ function createFigure() {
 
       var t = d3
         .transition()
-        .duration(2000)
+        .duration(1000)
         .ease(d3.easeQuadInOut);
 
       d3.select("#map-group")
@@ -353,7 +357,7 @@ function createFigure() {
     function step4() {
       var t = d3
         .transition()
-        .duration(2000)
+        .duration(1000)
         .ease(d3.easeQuadInOut);
 
       d3.select("#map-group")
@@ -369,7 +373,7 @@ function createFigure() {
 
       t = d3
         .transition()
-        .delay(2050)
+        .delay(1050)
         .duration(1000)
         .ease(d3.easeQuadInOut);
 
@@ -387,7 +391,7 @@ function createFigure() {
         .transition()
         .duration(10)
         .style("opacity", d => d.op)
-        .delay(d => 2050 + Math.sqrt(d.index) * 250);
+        .delay(d => 1050 + Math.sqrt(d.index) * 250);
 
       t = d3
         .transition()
@@ -436,7 +440,7 @@ function createFigure() {
 
       var t = d3
         .transition()
-        .duration(2000)
+        .duration(1000)
         .ease(d3.easeQuadInOut);
 
       d3.select("#map-group")
@@ -452,7 +456,7 @@ function createFigure() {
 
       t = d3
         .transition()
-        .delay(2050)
+        .delay(1050)
         .duration(1000)
         .ease(d3.easeQuadInOut);
 
@@ -470,12 +474,12 @@ function createFigure() {
         .transition()
         .duration(10)
         .style("opacity", d => d.op)
-        .delay(d => 2050 + Math.sqrt(d.index) * 250);
+        .delay(d => 1050 + Math.sqrt(d.index) * 250);
     },
     function step6() {
       var t = d3
         .transition()
-        .duration(2000)
+        .duration(1000)
         .ease(d3.easeQuadInOut);
 
       d3.select("#map-group")
@@ -513,7 +517,7 @@ function createFigure() {
         .transition()
         .duration(1000)
         .delay(function(d) {
-          value = 1000;
+          value = 300;
           switch (d.Room_2017) {
             case "Mission":
               break;
@@ -528,6 +532,19 @@ function createFigure() {
         })
         .attr("d", d => "M" + d.x1 + " " + d.y1 + " L" + d.x2 + " " + d.y2)
         .style("opacity", d => d.num * 10);
+    },
+    function step7() {
+      t = d3
+        .transition()
+        .duration(400)
+        .ease(d3.easeQuadInOut);
+
+      d3.select(".line-container")
+        .selectAll("path")
+        .transition(t)
+        .attr("d", d => "M" + d.x1 + " " + d.y1 + " L" + d.x1 + " " + d.y1)
+        .style("opacity", 0);
+
     }
   ];
 
