@@ -55,11 +55,12 @@ function createPropChart(in_data) {
   color = d3
     .scaleOrdinal()
     .domain(data.map(d => d.name))
-    .range(
-      d3
-        .quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), data.length)
-        .reverse()
-    );
+    .range([
+      "rgba(74, 108, 111, 0.8)",
+      "rgba(132, 96, 117, 1)",
+      "rgba(196, 178, 188, 1)",
+      "rgba(61, 111, 139, 1)"
+    ]);
 
   function createCircData(width, num, x, y, index) {
     circData = [];
@@ -90,7 +91,7 @@ function createPropChart(in_data) {
       .attr("cx", d => d.xval)
       .attr("cy", d => d.yval)
       .attr("r", radius)
-      .attr("fill", d => (d.index <= num ? color : "rgba(134, 134, 134, 0.5)"))
+      .attr("fill", d => (d.index <= num ? color : "rgba(40, 40, 40, 0.8)"))
       .style("opacity", 0);
 
     currentg
@@ -103,7 +104,7 @@ function createPropChart(in_data) {
       .attr("y", y + 3.3 * radius)
       .attr("fill", color)
       .style("opacity", 0);
-  };
+  }
 
   data.map(function(d, i) {
     createCircles(
@@ -152,14 +153,12 @@ function createMainPropChart() {
   color = d3
     .scaleOrdinal()
     .domain(collegeData.map(d => d.name))
-    .range(
-      d3
-        .quantize(
-          t => d3.interpolateSpectral(t * 0.8 + 0.1),
-          collegeData.length
-        )
-        .reverse()
-    );
+    .range([
+      "rgba(74, 108, 111, 0.8)",
+      "rgba(132, 96, 117, 1)",
+      "rgba(196, 178, 188, 1)",
+      "rgba(61, 111, 139, 1)"
+    ]);
 
   function createCircData(width, num, x, y) {
     circData = [];
@@ -200,7 +199,7 @@ function createMainPropChart() {
       .attr("x", x - radius)
       .attr("y", y + 3.3 * radius)
       .attr("fill", color);
-  };
+  }
 
   collegeData.map(function(d, i) {
     createCircles(
@@ -256,20 +255,20 @@ function createMainPropChart() {
         .delay(d => Math.sqrt(prevVal - d.index + 1) * 200)
         .remove();
 
-      if(newVal < collegeData[i].value) {
-      circles
-      .transition()
-      .duration(10)
-      .delay(d => Math.sqrt(prevVal - d.index + 1) * 200)
-      .attr("fill", d =>
-          d.index < newVal ? color(name) : "rgba(134, 134, 134, 0.5)"
-        )
+      if (newVal < collegeData[i].value) {
+        circles
+          .transition()
+          .duration(10)
+          .delay(d => Math.sqrt(prevVal - d.index + 1) * 200)
+          .attr("fill", d =>
+            d.index < newVal ? color(name) : "rgba(40, 40, 40, 0.8)"
+          );
       } else {
         circles
-      .transition()
-      .duration(10)
-      .delay(d => Math.sqrt(d.index - usData[i].value) * 200)
-      .attr("fill", color(name));
+          .transition()
+          .duration(10)
+          .delay(d => Math.sqrt(d.index - usData[i].value) * 200)
+          .attr("fill", color(name));
       }
     }
     eval("data" + toggle).map((d, i) => updater(d.name, d.value, i));

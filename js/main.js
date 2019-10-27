@@ -5,7 +5,7 @@ var fyids = [214110776, 214110967, 214111011];
 
 var pvalColor = d3
   .scaleLinear()
-  .domain([0, 0.25, 1])
+  .domain([0, 0.05, 1])
   .range(["rgb(139,0,0,0.8)", "rgb(255,215,0,0.8)", "rgb(107,142,35,0.8)"]);
 
 function setup() {
@@ -77,7 +77,7 @@ function colorScale() {
     .append("svg")
     .attr("width", "100%")
     .attr("height", "100%")
-    .attr("viewBox", [0, 0, 200, 30])
+    .attr("viewBox", [0, 0, 200, 35])
     .attr("preserveAspectRatio", "xMinYMin meet");
 
   scaledef = scale.append("linearGradient").attr("id", "linscale");
@@ -88,7 +88,7 @@ function colorScale() {
     .attr("stop-color", "rgb(107,142,35,0.8)");
   scaledef
     .append("stop")
-    .attr("offset", "75%")
+    .attr("offset", "95%")
     .attr("stop-color", "rgb(255,215,0,0.8)");
   scaledef
     .append("stop")
@@ -103,30 +103,44 @@ function colorScale() {
     .attr("fill", "url('#linscale')");
 
   scale
-    .append("text")
-    .attr("font-family", "georgia")
-    .attr("font-size", 8)
-    .attr("x", 10)
-    .attr("y", 8)
-    .attr("fill", "white")
-    .html("Most")
-    .append("tspan")
-    .attr("dy", 10)
-    .attr("dx", -22)
-    .html("Similar");
+    .append("path")
+    .attr("d", "M 155 20 L 159 24 L 151 24 L 155 20")
+    .attr("fill", "white");
 
   scale
     .append("text")
     .attr("font-family", "georgia")
     .attr("font-size", 8)
-    .attr("x", 170)
-    .attr("y", 8)
+    .attr("x", 135)
+    .attr("y", 32)
     .attr("fill", "white")
-    .html("Least")
-    .append("tspan")
+    .html("5% chance");
+
+  scale
+    .append("text")
+    .attr("font-family", "georgia")
+    .attr("font-size", 8)
+    .attr("x", 10)
+    .attr("y", 12)
+    .attr("fill", "white")
+    .html("Likely");
+  /*.append("tspan")
     .attr("dy", 10)
     .attr("dx", -22)
-    .html("Similar");
+    .html("Similar");*/
+
+  scale
+    .append("text")
+    .attr("font-family", "georgia")
+    .attr("font-size", 8)
+    .attr("x", 165)
+    .attr("y", 12)
+    .attr("fill", "white")
+    .html("Unlikely");
+  /*.append("tspan")
+    .attr("dy", 10)
+    .attr("dx", -22)
+    .html("Similar");*/
 }
 
 function basemap() {
@@ -331,7 +345,10 @@ function createFigure() {
 
       d3.select("#map-group")
         .transition(t)
-        .attr("transform", "scale(1.3) translate(-300, " + eval(height * 0.1 - 210) + ")");
+        .attr(
+          "transform",
+          "scale(1.3) translate(-300, " + eval(height * 0.1 - 210) + ")"
+        );
     },
     function step4() {
       var t = d3
@@ -343,7 +360,11 @@ function createFigure() {
         .transition(t)
         .attr(
           "transform",
-          "scale(1.5) translate(" + eval(-500-width * 0.1) + ", " + eval(height * 0.25 - 350) + ")"
+          "scale(1.5) translate(" +
+            eval(-500 - width * 0.1) +
+            ", " +
+            eval(height * 0.25 - 350) +
+            ")"
         );
 
       t = d3
@@ -394,7 +415,7 @@ function createFigure() {
             .duration(400)
             .ease(d3.easeQuadInOut)
             .style("fill", pvalColor(Number(data.pval)))
-            .style("stroke", pvalColor(Number(data.pval) + 0.05));
+            .style("stroke", pvalColor(Number(data.pval) + 0.02));
         }
       });
 
@@ -422,7 +443,11 @@ function createFigure() {
         .transition(t)
         .attr(
           "transform",
-          "scale(1.5) translate(" + eval(-500-width * 0.1) + ", " + eval(height * 0.25 - 350) + ")"
+          "scale(1.5) translate(" +
+            eval(-500 - width * 0.1) +
+            ", " +
+            eval(height * 0.25 - 350) +
+            ")"
         );
 
       t = d3
@@ -455,7 +480,10 @@ function createFigure() {
 
       d3.select("#map-group")
         .transition(t)
-        .attr("transform", "scale(1.3) translate(-300, " + eval(height * 0.1 - 210) + ")");
+        .attr(
+          "transform",
+          "scale(1.3) translate(-300, " + eval(height * 0.1 - 210) + ")"
+        );
 
       var t = d3
         .transition()

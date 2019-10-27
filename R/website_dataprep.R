@@ -111,7 +111,8 @@ prop_data <- merged_data %>%
     p_asi = sum(predrace == "Asian") / n(),
     p_lat = sum(predrace == "Latino_Hispanic") / n(),
     p_eas = sum(predrace == "East_Indian") / n(),
-    total_num = n()
+    total_num = n(),
+    avg_year = mean(Year)
   ) %>%
   left_join(building_ids, by = c('Room_2017' = 'name')) %>%
   mutate(p_asi = p_asi + p_eas) %>%
