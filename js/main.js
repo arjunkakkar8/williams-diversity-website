@@ -911,8 +911,7 @@ function createFigure() {
 
       d3.select("#body-container").style("padding-bottom", "100vh");
       d3.select("#main-chart")
-        .style("position", "fixed")
-        .style("top", "0vh");
+        .style("position", "fixed");
       d3.select("#overlay").style("position", "absolute");
       d3.select("#outro").style("opacity", 0);
 
@@ -921,10 +920,11 @@ function createFigure() {
     function step11() {
       d3.select("#body-container").style("padding-bottom", "0vh");
       d3.select("#main-chart")
-        .style("position", "relative")
-        .style("top", "-4vh");
+        .style("position", "relative");
       d3.select("#overlay").style("position", "relative");
       d3.select("#outro").style("opacity", 1);
+
+      
 
       window.addEventListener("mousedown", selectionHandler);
     }

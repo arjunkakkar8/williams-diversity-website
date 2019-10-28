@@ -26,10 +26,10 @@ div.intro {
 
 #outro {
     font-family: didot;
+    width: 50%;
     color: white;
     padding: 10% 25%;
     opacity: 0;
-    top: -4vh;
     position: relative;
     background-color: rgb(17, 20, 31);
 }
