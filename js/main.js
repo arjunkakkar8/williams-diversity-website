@@ -183,7 +183,13 @@ function selectionHandler() {
         .match(/\d/g)
         .join("");
       id_index = ids.findIndex(e => e == id);
-      createPropChart(propData[id_index], "temp-popup", cx + 50, cy - 400, false);
+      createPropChart(
+        propData[id_index],
+        "temp-popup",
+        cx + 50,
+        cy - 400,
+        false
+      );
 
       d3.selectAll("g.popups svg.temp-popup text")
         .transition(t)
@@ -859,6 +865,11 @@ function createFigure() {
         .duration(400)
         .ease(d3.easeQuadInOut);
 
+      d3.select("#map-tip")
+        .transition(t)
+        .style("opacity", 0)
+        .remove();
+
       d3.selectAll("g.popups svg.temp-popup")
         .transition(t)
         .style("opacity", 0)
@@ -910,8 +921,7 @@ function createFigure() {
         );
 
       d3.select("#body-container").style("padding-bottom", "100vh");
-      d3.select("#main-chart")
-        .style("position", "fixed");
+      d3.select("#main-chart").style("position", "fixed");
       d3.select("#overlay").style("position", "absolute");
       d3.select("#outro").style("opacity", 0);
 
@@ -919,12 +929,28 @@ function createFigure() {
     },
     function step11() {
       d3.select("#body-container").style("padding-bottom", "0vh");
-      d3.select("#main-chart")
-        .style("position", "relative");
+      d3.select("#main-chart").style("position", "relative");
       d3.select("#overlay").style("position", "relative");
       d3.select("#outro").style("opacity", 1);
 
-      
+      t = d3
+        .transition()
+        .duration(400)
+        .ease(d3.easeQuadInOut);
+
+      d3.select("#map-group")
+        .append("text")
+        .attr("id", "map-tip")
+        .attr("font-family", "georgia")
+        .attr("font-size", 24)
+        .attr("text-anchor", "middle")
+        .text("Click on any building to see proportions")
+        .attr("x", 950)
+        .attr("y", 1100)
+        .attr("fill", "grey")
+        .style("opacity", 0)
+        .transition(t)
+        .style("opacity", 1);
 
       window.addEventListener("mousedown", selectionHandler);
     }
