@@ -26,8 +26,7 @@ function setup() {
     .append("g")
     .attr("class", "popups")
     .append("g")
-    .attr("class", "line-guide")
-    .style("opacity", 0);
+    .attr("class", "line-guide");
   d3.select("#map-group g.buildings")
     .append("g")
     .attr("id", "housing-container");
@@ -66,11 +65,16 @@ function createMoveArrows() {
 function popupPropCharts() {
   d3.csv("R/prop_data.csv", function(data) {
     if (fyids.includes(Number(data.id))) {
-      createPropChart(data);
+      createPropChart(data, "fy");
     }
-    console.log(data.Name);
-    if (data.Room_2017 == "Poker Flats"){
-      createPropChart(data);
+    if (data.Room_2017 == "Poker Flats") {
+      createPropChart(data, "sp1", 1200, 200);
+    }
+    if (data.Room_2017 == "Lehman") {
+      createPropChart(data, "sp2", 1200, 400);
+    }
+    if (data.Room_2017 == "Horn") {
+      createPropChart(data, "sp3", 850, 770);
     }
   });
 }
@@ -128,10 +132,6 @@ function colorScale() {
     .attr("y", 12)
     .attr("fill", "white")
     .html("Likely");
-  /*.append("tspan")
-    .attr("dy", 10)
-    .attr("dx", -22)
-    .html("Similar");*/
 
   scale
     .append("text")
@@ -141,10 +141,6 @@ function colorScale() {
     .attr("y", 12)
     .attr("fill", "white")
     .html("Unlikely");
-  /*.append("tspan")
-    .attr("dy", 10)
-    .attr("dx", -22)
-    .html("Similar");*/
 }
 
 function basemap() {
@@ -170,10 +166,15 @@ function basemap() {
 
   // Add another copy of housing buildings
   d3.csv("R/prop_data.csv", function(data) {
-    return Number(data.id);
-  }).then(function(ids) {
+    return data;
+  }).then(function(data) {
+    ids = [];
+    for (i = 0; i < data.length; i++) {
+      ids.push(Number(data[i].id));
+    }
     buildingData.features.map(function(feature) {
       if (ids.includes(feature.properties.osm_id)) {
+        index = ids.findIndex(e => e == feature.properties.osm_id);
         d3.select("#map-group g.buildings g#housing-container")
           .append("path")
           .attr("d", geoGenerator(feature))
@@ -186,6 +187,7 @@ function basemap() {
             }
             return "housing-building " + type;
           })
+          .attr("pval", data[index].pval)
           .style("opacity", 0);
       }
     });
@@ -315,8 +317,7 @@ function createFigure() {
           "linear-gradient(to right, rgba(0, 0, 0, 0) 65%, rgba(0, 0, 0, 0.5) 80%"
         );
 
-      d3.select("#college-proportion-figure")
-        .selectAll("circle")
+      d3.selectAll("#college-proportion-figure circle")
         .transition(t)
         .style("opacity", "0");
 
@@ -328,17 +329,15 @@ function createFigure() {
         .transition(t)
         .style("opacity", 1);
 
-      d3.select("g.popups")
-        .selectAll("text")
+      d3.selectAll("g.popups svg.fy text")
         .transition(t)
         .style("opacity", 0);
 
-      d3.select("g.line-guide")
+      d3.selectAll("g.line-guide path.fy")
         .transition(t)
-        .style("opacity", 0);
+        .attr("opacity", 0);
 
-      d3.select("g.popups")
-        .selectAll("circle")
+      d3.selectAll("g.popups svg.fy circle")
         .transition(t)
         .style("opacity", 0);
 
@@ -377,17 +376,15 @@ function createFigure() {
         .duration(1000)
         .ease(d3.easeQuadInOut);
 
-      d3.select("g.popups")
-        .selectAll("text")
+      d3.selectAll("g.popups svg.fy text")
         .transition(t)
         .style("opacity", 1);
 
-      d3.select("g.line-guide")
+      d3.selectAll("g.line-guide path.fy")
         .transition(t)
-        .style("opacity", 1);
+        .attr("opacity", 1);
 
-      d3.select("g.popups")
-        .selectAll("circle")
+      d3.selectAll("g.popups svg.fy circle")
         .transition()
         .duration(10)
         .style("opacity", d => d.op)
@@ -460,17 +457,15 @@ function createFigure() {
         .duration(1000)
         .ease(d3.easeQuadInOut);
 
-      d3.select("g.popups")
-        .selectAll("text")
+      d3.selectAll("g.popups svg.fy text")
         .transition(t)
         .style("opacity", 1);
 
-      d3.select("g.line-guide")
+      d3.selectAll("g.line-guide path.fy")
         .transition(t)
-        .style("opacity", 1);
+        .attr("opacity", 1);
 
-      d3.select("g.popups")
-        .selectAll("circle")
+      d3.selectAll("g.popups svg.fy circle")
         .transition()
         .duration(10)
         .style("opacity", d => d.op)
@@ -494,17 +489,15 @@ function createFigure() {
         .duration(400)
         .ease(d3.easeQuadInOut);
 
-      d3.select("g.popups")
-        .selectAll("text")
+      d3.selectAll("g.popups svg.fy text")
         .transition(t)
         .style("opacity", 0);
 
-      d3.select("g.line-guide")
+      d3.selectAll("g.line-guide path.fy")
         .transition(t)
-        .style("opacity", 0);
+        .attr("opacity", 0);
 
-      d3.select("g.popups")
-        .selectAll("circle")
+      d3.selectAll("g.popups svg.fy circle")
         .transition(t)
         .style("opacity", 0);
 
@@ -517,7 +510,7 @@ function createFigure() {
         .transition()
         .duration(1000)
         .delay(function(d) {
-          value = 300;
+          value = 0;
           switch (d.Room_2017) {
             case "Mission":
               break;
@@ -532,6 +525,24 @@ function createFigure() {
         })
         .attr("d", d => "M" + d.x1 + " " + d.y1 + " L" + d.x2 + " " + d.y2)
         .style("opacity", d => d.num * 10);
+
+      d3.selectAll("g.popups svg.sp1 text")
+        .transition(t)
+        .style("opacity", 0);
+
+      d3.selectAll("g.line-guide path.sp1")
+        .transition(t)
+        .attr("opacity", 0);
+
+      d3.selectAll("g.popups svg.sp1 circle")
+        .transition(t)
+        .style("opacity", 0);
+
+      b_el = d3.select("#b" + 214110525);
+      b_el
+        .transition(t)
+        .style("fill", "rgb(59, 41, 109)")
+        .style("stroke", "rgb(73, 87, 131)");
     },
     function step7() {
       t = d3
@@ -545,6 +556,281 @@ function createFigure() {
         .attr("d", d => "M" + d.x1 + " " + d.y1 + " L" + d.x1 + " " + d.y1)
         .style("opacity", 0);
 
+      d3.selectAll("g.popups svg.sp2 text")
+        .transition(t)
+        .style("opacity", 0);
+
+      d3.selectAll("g.line-guide path.sp2")
+        .transition(t)
+        .attr("opacity", 0);
+
+      d3.selectAll("g.popups svg.sp2 circle")
+        .transition(t)
+        .style("opacity", 0);
+
+      b_el = d3.select("#b" + 214110694);
+      b_el
+        .transition(t)
+        .style("fill", "rgb(59, 41, 109)")
+        .style("stroke", "rgb(73, 87, 131)");
+
+      t = d3
+        .transition()
+        .delay(1050)
+        .duration(1000)
+        .ease(d3.easeQuadInOut);
+
+      d3.selectAll("g.popups svg.sp1 text")
+        .transition(t)
+        .style("opacity", 1);
+
+      d3.selectAll("g.line-guide path.sp1")
+        .transition(t)
+        .attr("opacity", 1);
+
+      d3.selectAll("g.popups svg.sp1 circle")
+        .transition()
+        .duration(10)
+        .style("opacity", d => d.op)
+        .delay(d => 1050 + Math.sqrt(d.index) * 250);
+
+      b_el = d3.select("#b" + 214110525);
+      b_el
+        .transition(t)
+        .style("fill", pvalColor(Number(b_el.attr("pval"))))
+        .style("stroke", pvalColor(Number(b_el.attr("pval")) + 0.02));
+
+      var t = d3
+        .transition()
+        .duration(1000)
+        .ease(d3.easeQuadInOut);
+
+      d3.select("#map-group")
+        .transition(t)
+        .attr(
+          "transform",
+          "scale(1.8) translate(-800, " + eval(height * 0.1 - 100) + ")"
+        );
+    },
+    function step8() {
+      t = d3
+        .transition()
+        .duration(400)
+        .ease(d3.easeQuadInOut);
+
+      d3.selectAll("g.popups svg.sp1 text")
+        .transition(t)
+        .style("opacity", 0);
+
+      d3.selectAll("g.line-guide path.sp1")
+        .transition(t)
+        .attr("opacity", 0);
+
+      d3.selectAll("g.popups svg.sp1 circle")
+        .transition(t)
+        .style("opacity", 0);
+
+      d3.selectAll("g.popups svg.sp3 text")
+        .transition(t)
+        .style("opacity", 0);
+
+      d3.selectAll("g.line-guide path.sp3")
+        .transition(t)
+        .attr("opacity", 0);
+
+      d3.selectAll("g.popups svg.sp3 circle")
+        .transition(t)
+        .style("opacity", 0);
+
+      b_el = d3.select("#b" + 214111485);
+      b_el
+        .transition(t)
+        .style("fill", "rgb(59, 41, 109)")
+        .style("stroke", "rgb(73, 87, 131)");
+
+      t = d3
+        .transition()
+        .delay(1050)
+        .duration(1000)
+        .ease(d3.easeQuadInOut);
+
+      b_el = d3.select("#b" + 214110694);
+      b_el
+        .transition(t)
+        .style("fill", pvalColor(Number(b_el.attr("pval"))))
+        .style("stroke", pvalColor(Number(b_el.attr("pval")) + 0.02));
+
+      d3.selectAll("g.popups svg.sp2 text")
+        .transition(t)
+        .style("opacity", 1);
+
+      d3.selectAll("g.line-guide path.sp2")
+        .transition(t)
+        .attr("opacity", 1);
+
+      d3.selectAll("g.popups svg.sp2 circle")
+        .transition()
+        .duration(10)
+        .style("opacity", d => d.op)
+        .delay(d => 1050 + Math.sqrt(d.index) * 250);
+
+      var t = d3
+        .transition()
+        .duration(1000)
+        .ease(d3.easeQuadInOut);
+
+      d3.select("#map-group")
+        .transition(t)
+        .attr(
+          "transform",
+          "scale(1.8) translate(-800, " + eval(height * 0.1 - 300) + ")"
+        );
+    },
+    function step9() {
+      t = d3
+        .transition()
+        .duration(400)
+        .ease(d3.easeQuadInOut);
+
+      d3.selectAll("g.popups svg.sp2 text")
+        .transition(t)
+        .style("opacity", 0);
+
+      d3.selectAll("g.line-guide path.sp2")
+        .transition(t)
+        .attr("opacity", 0);
+
+      d3.selectAll("g.popups svg.sp2 circle")
+        .transition(t)
+        .style("opacity", 0);
+
+      d3.select("#overlay")
+        .transition(t)
+        .style(
+          "background",
+          "linear-gradient(to right, rgba(0, 0, 0, 0) 65%, rgba(0, 0, 0, 0.5) 80%"
+        );
+
+      b_array = document.getElementsByClassName("housing-building");
+      colored = [
+        "b214110776",
+        "b214110967",
+        "b214111011",
+        "b214111485",
+        "b214110694",
+        "b214110525"
+      ];
+
+      for (i = 0; i < b_array.length; i++) {
+        id = b_array[i].getAttribute("id");
+        if (!colored.includes(id)) {
+          console.log("remove");
+          b_el = d3.select("#" + id);
+          b_el
+            .transition(t)
+            .style("fill", "rgb(59, 41, 109)")
+            .style("stroke", "rgb(73, 87, 131)");
+        }
+      }
+
+      t = d3
+        .transition()
+        .delay(1050)
+        .duration(1000)
+        .ease(d3.easeQuadInOut);
+
+      b_el = d3.select("#b" + 214111485);
+      b_el
+        .transition(t)
+        .style("fill", pvalColor(Number(b_el.attr("pval"))))
+        .style("stroke", pvalColor(Number(b_el.attr("pval")) + 0.02));
+
+      d3.selectAll("g.popups svg.sp3 text")
+        .transition(t)
+        .style("opacity", 1);
+
+      d3.selectAll("g.line-guide path.sp3")
+        .transition(t)
+        .attr("opacity", 1);
+
+      d3.selectAll("g.popups svg.sp3 circle")
+        .transition()
+        .duration(10)
+        .style("opacity", d => d.op)
+        .delay(d => 1050 + Math.sqrt(d.index) * 250);
+
+      var t = d3
+        .transition()
+        .duration(1000)
+        .ease(d3.easeQuadInOut);
+
+      d3.select("#map-group")
+        .transition(t)
+        .attr(
+          "transform",
+          "scale(1.8) translate(-500, " + eval(height * 0.1 - 700) + ")"
+        );
+    },
+    function step10() {
+      t = d3
+        .transition()
+        .duration(400)
+        .ease(d3.easeQuadInOut);
+
+      d3.selectAll("g.popups svg.sp3 text")
+        .transition(t)
+        .style("opacity", 0);
+
+      d3.selectAll("g.line-guide path.sp3")
+        .transition(t)
+        .attr("opacity", 0);
+
+      d3.selectAll("g.popups svg.sp3 circle")
+        .transition(t)
+        .style("opacity", 0);
+
+      d3.select("#overlay")
+        .transition(t)
+        .style(
+          "background",
+          "linear-gradient(to right, rgba(0, 0, 0, 0) 65%, rgba(0, 0, 0, 0) 80%"
+        );
+
+      b_array = document.getElementsByClassName("housing-building");
+      for (i = 0; i < b_array.length; i++) {
+        b_el = d3.select("#" + b_array[i].getAttribute("id"));
+        b_el
+          .transition(t)
+          .style("fill", pvalColor(Number(b_el.attr("pval"))))
+          .style("stroke", pvalColor(Number(b_el.attr("pval")) + 0.02));
+      }
+
+      var t = d3
+        .transition()
+        .duration(1000)
+        .ease(d3.easeQuadInOut);
+
+      d3.select("#map-group")
+        .transition(t)
+        .attr(
+          "transform",
+          "scale(1.3) translate(-150, " + eval(height * 0.1 - 210) + ")"
+        );
+
+      d3.select("#body-container").style("padding-bottom", "100vh");
+      d3.select("#main-chart")
+        .style("position", "fixed")
+        .style("top", "0vh");
+      d3.select("#overlay").style("position", "absolute");
+      d3.select("#outro").style("opacity", 0);
+    },
+    function step11() {
+      d3.select("#body-container").style("padding-bottom", "0vh");
+      d3.select("#main-chart")
+        .style("position", "relative")
+        .style("top", "-4vh");
+      d3.select("#overlay").style("position", "relative");
+      d3.select("#outro").style("opacity", 1);
     }
   ];
 

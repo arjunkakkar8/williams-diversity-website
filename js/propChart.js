@@ -12,7 +12,7 @@ const usData = [
   { name: "White", value: 60 }
 ];
 
-function createPropChart(in_data) {
+function createPropChart(in_data, tag, x, y) {
   building_el = document.getElementById("b" + in_data.id);
   bx = building_el.getBBox().x + building_el.getBBox().width * 0.6;
   by = building_el.getBBox().y + building_el.getBBox().height / 2;
@@ -29,6 +29,9 @@ function createPropChart(in_data) {
       px = 1100;
       py = by - 75;
       break;
+    default:
+      px = x;
+      py = y;
   }
 
   var width = 600,
@@ -45,7 +48,7 @@ function createPropChart(in_data) {
     .select("#map-group g.popups")
     .append("svg")
     .attr("id", "b" + in_data.id + "-prop-chart")
-    .attr("class", "popup-prop-chart")
+    .attr("class", "popup-prop-chart "+tag)
     .attr("width", "300")
     .attr("x", px)
     .attr("y", py)
@@ -91,7 +94,7 @@ function createPropChart(in_data) {
       .attr("cx", d => d.xval)
       .attr("cy", d => d.yval)
       .attr("r", radius)
-      .attr("fill", d => (d.index <= num ? color : "rgba(40, 40, 40, 0.8)"))
+      .attr("fill", d => (d.index < num ? color : "rgba(40, 40, 40, 0.8)"))
       .style("opacity", 0);
 
     currentg
@@ -121,6 +124,7 @@ function createPropChart(in_data) {
   guide = d3.select("g.line-guide");
   guide
     .append("path")
+    .attr("class", tag)
     .attr(
       "d",
       "M" +
@@ -135,7 +139,8 @@ function createPropChart(in_data) {
         eval(px + 280) +
         " " +
         eval(py + 330)
-    );
+    )
+    .attr("opacity", 0);
 }
 
 function createMainPropChart() {
