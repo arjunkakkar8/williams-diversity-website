@@ -143,6 +143,47 @@ function colorScale() {
     .html("Unlikely");
 }
 
+
+function selectionHandler() {
+  var t = d3
+    .transition()
+    .duration(1000)
+    .ease(d3.easeQuadInOut);
+
+  elem_list = document.elementsFromPoint(event.clientX, event.clientY);
+
+  for (i = 0; i < elem_list.length; i++) {
+    elem = elem_list[i];
+    if (
+      (elem.getAttribute("class") == "housing-building first-year") |
+      (elem.getAttribute("class") == "housing-building upper-class")
+    ) {
+      cx = elem.getBBox().x + elem.getBBox().width / 2;
+      cy = elem.getBBox().y + elem.getBBox().height / 2;
+      d3.select("#map-group")
+        .transition(t)
+        .attr(
+          "transform",
+          "scale(2.5) translate(" +
+            eval(250 - cx) +
+            ", " +
+            eval(400 - cy) +
+            ")"
+        );
+      console.log([cx, cy]);
+      break;
+    } else {
+      d3.select("#map-group")
+        .transition(t)
+        .attr(
+          "transform",
+          "scale(1.3) translate(-150, " + eval(height * 0.1 - 210) + ")"
+        );
+      console.log("back");
+    }
+  }
+}
+
 function basemap() {
   d3.select("#map-container")
     .attr("viewBox", [0, 0, width, height])
@@ -724,7 +765,6 @@ function createFigure() {
       for (i = 0; i < b_array.length; i++) {
         id = b_array[i].getAttribute("id");
         if (!colored.includes(id)) {
-          console.log("remove");
           b_el = d3.select("#" + id);
           b_el
             .transition(t)
@@ -823,6 +863,8 @@ function createFigure() {
         .style("top", "0vh");
       d3.select("#overlay").style("position", "absolute");
       d3.select("#outro").style("opacity", 0);
+
+      window.removeEventListener("mousedown", selectionHandler);
     },
     function step11() {
       d3.select("#body-container").style("padding-bottom", "0vh");
@@ -831,6 +873,8 @@ function createFigure() {
         .style("top", "-4vh");
       d3.select("#overlay").style("position", "relative");
       d3.select("#outro").style("opacity", 1);
+
+      window.addEventListener("mousedown", selectionHandler);
     }
   ];
 

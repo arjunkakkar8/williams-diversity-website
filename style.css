@@ -19,7 +19,7 @@ div.intro {
 
 #main-chart {
     background-color: rgb(17, 20, 31);
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     position: fixed;
 }
@@ -33,6 +33,7 @@ div.intro {
     position: relative;
     background-color: rgb(17, 20, 31);
 }
+
 
 .buildings path {
     fill: rgb(59, 41, 109);
