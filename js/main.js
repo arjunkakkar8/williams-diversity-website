@@ -2,6 +2,8 @@ var map, figure;
 var width = 2000,
   height = 1400;
 var fyids = [214110776, 214110967, 214111011];
+var ids = [];
+var propData = [];
 
 var pvalColor = d3
   .scaleLinear()
@@ -20,6 +22,15 @@ function setup() {
     .append("g")
     .attr("id", "map-group");
 
+  def = map.append("defs");
+  def.html(
+    "<filter id='shadow' x='0' y='0' width='200%' height='200%'>" +
+      "<feOffset result='offOut' in='SourceAlpha' dx='0' dy='0' />" +
+      "<feGaussianBlur result='blurOut' in='offOut' stdDeviation='15' />" +
+      "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
+      "</filter>"
+  );
+
   map.append("g").attr("class", "buildings");
   map.append("g").attr("class", "roads");
   map
@@ -27,6 +38,7 @@ function setup() {
     .attr("class", "popups")
     .append("g")
     .attr("class", "line-guide");
+
   d3.select("#map-group g.buildings")
     .append("g")
     .attr("id", "housing-container");
@@ -143,7 +155,6 @@ function colorScale() {
     .html("Unlikely");
 }
 
-
 function selectionHandler() {
   var t = d3
     .transition()
@@ -164,13 +175,30 @@ function selectionHandler() {
         .transition(t)
         .attr(
           "transform",
-          "scale(2.5) translate(" +
-            eval(250 - cx) +
-            ", " +
-            eval(400 - cy) +
-            ")"
+          "scale(2.5) translate(" + eval(250 - cx) + ", " + eval(400 - cy) + ")"
         );
-      console.log([cx, cy]);
+
+      id = elem
+        .getAttribute("id")
+        .match(/\d/g)
+        .join("");
+      id_index = ids.findIndex(e => e == id);
+      createPropChart(propData[id_index], "temp-popup", cx + 50, cy - 400, false);
+
+      d3.selectAll("g.popups svg.temp-popup text")
+        .transition(t)
+        .style("opacity", 1);
+
+      d3.selectAll("g.line-guide path.temp-popup")
+        .transition(t)
+        .attr("opacity", 1);
+
+      d3.selectAll("g.popups svg.temp-popup circle")
+        .transition()
+        .duration(10)
+        .style("opacity", d => d.op)
+        .delay(d => 1050 + Math.sqrt(d.index) * 250);
+
       break;
     } else {
       d3.select("#map-group")
@@ -179,7 +207,21 @@ function selectionHandler() {
           "transform",
           "scale(1.3) translate(-150, " + eval(height * 0.1 - 210) + ")"
         );
-      console.log("back");
+
+      var t = d3
+        .transition()
+        .duration(400)
+        .ease(d3.easeQuadInOut);
+
+      d3.selectAll("g.popups svg.temp-popup")
+        .transition(t)
+        .style("opacity", 0)
+        .remove();
+
+      d3.selectAll("g.line-guide path.temp-popup")
+        .transition(t)
+        .attr("opacity", 0)
+        .remove();
     }
   }
 }
@@ -207,9 +249,9 @@ function basemap() {
 
   // Add another copy of housing buildings
   d3.csv("R/prop_data.csv", function(data) {
+    propData.push(data);
     return data;
   }).then(function(data) {
-    ids = [];
     for (i = 0; i < data.length; i++) {
       ids.push(Number(data[i].id));
     }
@@ -816,6 +858,16 @@ function createFigure() {
         .transition()
         .duration(400)
         .ease(d3.easeQuadInOut);
+
+      d3.selectAll("g.popups svg.temp-popup")
+        .transition(t)
+        .style("opacity", 0)
+        .remove();
+
+      d3.selectAll("g.line-guide path.temp-popup")
+        .transition(t)
+        .attr("opacity", 0)
+        .remove();
 
       d3.selectAll("g.popups svg.sp3 text")
         .transition(t)

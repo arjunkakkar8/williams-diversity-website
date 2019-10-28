@@ -12,26 +12,31 @@ const usData = [
   { name: "White", value: 60 }
 ];
 
-function createPropChart(in_data, tag, x, y) {
+function createPropChart(in_data, tag, x, y, posFlag=true) {
   building_el = document.getElementById("b" + in_data.id);
   bx = building_el.getBBox().x + building_el.getBBox().width * 0.6;
   by = building_el.getBBox().y + building_el.getBBox().height / 2;
-  switch (in_data.Room_2017) {
-    case "Mission":
-      px = 1100;
-      py = by - 400;
-      break;
-    case "Williams":
-      px = 1100;
-      py = by - 300;
-      break;
-    case "Sage":
-      px = 1100;
-      py = by - 75;
-      break;
-    default:
-      px = x;
-      py = y;
+  if (posFlag) {
+    switch (in_data.Room_2017) {
+      case "Mission":
+        px = 1100;
+        py = by - 400;
+        break;
+      case "Williams":
+        px = 1100;
+        py = by - 300;
+        break;
+      case "Sage":
+        px = 1100;
+        py = by - 75;
+        break;
+      default:
+        px = x;
+        py = y;
+    }
+  } else {
+    px = x;
+    py = y;
   }
 
   var width = 600,
@@ -48,12 +53,13 @@ function createPropChart(in_data, tag, x, y) {
     .select("#map-group g.popups")
     .append("svg")
     .attr("id", "b" + in_data.id + "-prop-chart")
-    .attr("class", "popup-prop-chart "+tag)
+    .attr("class", "popup-prop-chart " + tag)
     .attr("width", "300")
     .attr("x", px)
     .attr("y", py)
     .attr("viewBox", [0, 0, width, height])
-    .attr("preserveAspectRatio", "xMinYMin meet");
+    .attr("preserveAspectRatio", "xMinYMin meet")
+    .attr("filter", "url(#shadow)");
 
   color = d3
     .scaleOrdinal()
@@ -120,6 +126,17 @@ function createPropChart(in_data, tag, x, y) {
       i
     );
   });
+
+  svg
+    .append("text")
+    .attr("font-family", "georgia")
+    .attr("font-size", 30)
+    .attr("text-anchor", "middle")
+    .attr("x", 300)
+    .attr("y", 700)
+    .attr("fill", "white")
+    .text(in_data.Room_2017)
+    .style("opacity", 0);
 
   guide = d3.select("g.line-guide");
   guide
