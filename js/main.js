@@ -22,6 +22,18 @@ function setup() {
     .append("g")
     .attr("id", "map-group");
 
+  map
+    .append("text")
+    .attr("id", "map-tip")
+    .attr("font-family", "georgia")
+    .attr("font-size", 24)
+    .attr("text-anchor", "middle")
+    .text("Click on any highlighted building to see proportions")
+    .attr("x", 950)
+    .attr("y", 1100)
+    .attr("fill", "grey")
+    .style("opacity", 0);
+
   def = map.append("defs");
   def.html(
     "<filter id='shadow' x='0' y='0' width='200%' height='200%'>" +
@@ -125,7 +137,7 @@ function colorScale() {
   scale
     .append("path")
     .attr("d", "M 155 20 L 159 24 L 151 24 L 155 20")
-    .attr("fill", "white");
+    .attr("fill", "rgb(201, 201, 212)");
 
   scale
     .append("text")
@@ -133,7 +145,7 @@ function colorScale() {
     .attr("font-size", 8)
     .attr("x", 135)
     .attr("y", 32)
-    .attr("fill", "white")
+    .attr("fill", "rgb(201, 201, 212)")
     .html("5% chance");
 
   scale
@@ -142,7 +154,7 @@ function colorScale() {
     .attr("font-size", 8)
     .attr("x", 10)
     .attr("y", 12)
-    .attr("fill", "white")
+    .attr("fill", "rgb(201, 201, 212)")
     .html("Likely");
 
   scale
@@ -151,7 +163,7 @@ function colorScale() {
     .attr("font-size", 8)
     .attr("x", 165)
     .attr("y", 12)
-    .attr("fill", "white")
+    .attr("fill", "rgb(201, 201, 212)")
     .html("Unlikely");
 }
 
@@ -867,8 +879,7 @@ function createFigure() {
 
       d3.select("#map-tip")
         .transition(t)
-        .style("opacity", 0)
-        .remove();
+        .style("opacity", 0);
 
       d3.selectAll("g.popups svg.temp-popup")
         .transition(t)
@@ -938,17 +949,7 @@ function createFigure() {
         .duration(400)
         .ease(d3.easeQuadInOut);
 
-      d3.select("#map-group")
-        .append("text")
-        .attr("id", "map-tip")
-        .attr("font-family", "georgia")
-        .attr("font-size", 24)
-        .attr("text-anchor", "middle")
-        .text("Click on any building to see proportions")
-        .attr("x", 950)
-        .attr("y", 1100)
-        .attr("fill", "grey")
-        .style("opacity", 0)
+      d3.select("#map-tip")
         .transition(t)
         .style("opacity", 1);
 

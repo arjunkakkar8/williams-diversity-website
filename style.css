@@ -1,105 +1,116 @@
-body { 
-    background-color: black;
-    width: 100%;
-    margin: 0;
-    padding: 0;
+body {
+  background-color: rgb(17, 20, 31);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+p {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+    color: rgb(169, 169, 179);
 }
 
 div.intro {
-    padding: 10% 25%;
+  padding: 10% 25%;
 }
 
 #overlay {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 10;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10;
 }
 
 #main-chart {
-    background-color: rgb(17, 20, 31);
-    width: 100%;
-    height: 100vh;
-    position: fixed;
+  background-color: rgb(17, 20, 31);
+  width: 100%;
+  height: 100vh;
+  position: fixed;
 }
 
 #outro {
-    font-family: didot;
-    width: 50%;
-    color: white;
-    padding: 10% 25%;
-    opacity: 0;
-    position: relative;
-    background-color: rgb(17, 20, 31);
+  font-family: didot;
+  font-size: 20px;
+  width: 50%;
+  color: rgb(201, 201, 212);
+  padding: 10% 25%;
+  opacity: 0;
+  position: relative;
+  background: linear-gradient(rgb(17, 20, 31), rgb(7, 6, 19));
 }
 
 .buildings path {
-    fill: rgb(59, 41, 109);
-    stroke: rgb(73, 87, 131);
+  fill: rgb(59, 41, 109);
+  stroke: rgb(73, 87, 131);
 }
 
 .roads path {
-    fill-opacity: 0;
-    stroke: grey;
+  fill-opacity: 0;
+  stroke: grey;
 }
 
 .line-guide path {
-    fill-opacity: 0;
-    stroke: rgb(66, 58, 87);
-    stroke-width: 2;
+  fill-opacity: 0;
+  stroke: rgb(66, 58, 87);
+  stroke-width: 2;
 }
 
-.title-text{
-    font-family: didot;
-    color: white;
-    text-align: center;
-    padding: 5% 20%;
+.title-text {
+  font-family: didot;
+  color: rgb(201, 201, 212);
+  text-align: center;
+  padding: 5% 20%;
 }
 
-#body-container{
-    position: relative;
-    left: 70%;
-    width: 30%;
-    opacity: 0;
+#body-container {
+  position: relative;
+  left: 70%;
+  width: 30%;
+  opacity: 0;
 }
 
-.body-text{
-    font-family: didot;
-    color: white;
-    position: relative;
-    padding: 2vh 1vw;
-    font-size: 20px;
+.body-text {
+  font-family: didot;
+  color: rgb(201, 201, 212);
+  position: relative;
+  padding: 2vh 1vw;
+  font-size: 20px;
 }
 
-#title{
-    font-size: 12vmin;
+#title {
+  font-size: 12vmin;
 }
 
-#subtitle{
-    font-size: 7vmin;
+#subtitle {
+  font-size: 7vmin;
 }
 
-select{
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    cursor: pointer;
-    height: 2.5rem;
-    width: 110px;
-    line-height: 42px;
-    color: #f9f9f7;
-    border: none;
-    padding-left: 20px;
-    font-family: didot;
-    font-size: 20px;
-    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%23FFFFFF'><polygon points='0,0 100,0 50,50'/></svg>") no-repeat;
-    background-size: 15px;
-    background-position: calc(3%) 80%;
-    background-repeat: no-repeat;
-    background-color: rgb(40,45,83,0.67);
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  height: 2.5rem;
+  width: 110px;
+  line-height: 42px;
+  color: #f9f9f7;
+  border: none;
+  padding-left: 20px;
+  font-family: didot;
+  font-size: 20px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%23FFFFFF'><polygon points='0,0 100,0 50,50'/></svg>")
+    no-repeat;
+  background-size: 15px;
+  background-position: calc(3%) 80%;
+  background-repeat: no-repeat;
+  background-color: rgb(40, 45, 83, 0.67);
 }
 
-.housing{
-    padding-top: 40vh;
+.housing {
+  padding-top: 40vh;
 }

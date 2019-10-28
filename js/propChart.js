@@ -134,7 +134,7 @@ function createPropChart(in_data, tag, x, y, posFlag=true) {
     .attr("text-anchor", "middle")
     .attr("x", 300)
     .attr("y", 700)
-    .attr("fill", "white")
+    .attr("fill", "rgb(201, 201, 212)")
     .text(in_data.Room_2017)
     .style("opacity", 0);
 
